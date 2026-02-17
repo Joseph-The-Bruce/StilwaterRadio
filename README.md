@@ -1,5 +1,7 @@
 # Stilwater Radio: A Saints Row 2 Radio Station Player
 
+> **Disclaimer:** This is a fan-made project and is not affiliated with, endorsed by, or connected to Deep Silver, Volition, or PLAION. All *Saints Row* trademarks, logos, video, and audio assets are the property of their respective owners. This app is intended for personal, non-commercial use only.
+
 ## Overview
 **Stilwater Radio** is an Android application designed to recreate the iconic radio stations from *Saints Row 2*. Stilwater Radio includes station-specific songs, themes, and DJ intros/outros. There are user controlled commercial breaks, news reports, and even protagonist "sing-along" versions of songs.
 
