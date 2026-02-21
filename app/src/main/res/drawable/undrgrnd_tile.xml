@@ -12,6 +12,6 @@
         android:top="10dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/underground_logo" />
+            android:src="@drawable/undrgrnd_logo" />
     </item>
 </layer-list>

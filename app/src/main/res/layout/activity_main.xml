@@ -117,9 +117,9 @@
             android:id="@+id/toggleButton6"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/underground_button_background"
+            android:background="@drawable/undrgrnd_button_background"
             android:scaleType="fitCenter"
-            android:src="@drawable/underground_logo"
+            android:src="@drawable/undrgrnd_logo"
             android:stateListAnimator="@animator/button_press"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -178,6 +178,7 @@
         android:layout_marginBottom="48dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -187,7 +188,7 @@
             android:id="@+id/backButton"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/button_background"
             android:padding="16dp"
             android:scaleType="fitCenter"
@@ -196,10 +197,21 @@
             tools:ignore="ContentDescription" />
 
         <ImageButton
+            android:id="@+id/playPauseButton"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:background="@drawable/button_background"
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_media_play"
+            android:stateListAnimator="@animator/button_press"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
             android:id="@+id/skipButton"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:background="@drawable/button_background"
             android:padding="16dp"
             android:scaleType="fitCenter"

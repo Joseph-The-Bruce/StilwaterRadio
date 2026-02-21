@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,7 +79,7 @@ public class MediaPlayerService extends MediaLibraryService {
     boolean includeMix = true;
     boolean includeGenx = true;
     boolean includeEzzzy = true;
-    boolean includeUnderground = true;
+    boolean includeUndrgrnd = true;
 
     private boolean ongoingCall = false;
     private CallStateCallback phoneStateListener;
@@ -229,7 +228,7 @@ public class MediaPlayerService extends MediaLibraryService {
                     items.add(createPlayableItem("mix", "Mix Radio", "mix_tile"));
                     items.add(createPlayableItem("genx", "GenX Radio", "genx_tile"));
                     items.add(createPlayableItem("ezzzy", "Ezzzy Radio", "ezzzy_tile"));
-                    items.add(createPlayableItem("underground", "Underground Radio", "underground_tile"));
+                    items.add(createPlayableItem("undrgrnd", "Undrgrnd Radio", "undrgrnd_tile"));
                 }
                 return Futures.immediateFuture(LibraryResult.ofItemList(ImmutableList.copyOf(items), params));
             }
@@ -262,31 +261,31 @@ public class MediaPlayerService extends MediaLibraryService {
             @NonNull
             @Override
             public ListenableFuture<SessionResult> onCustomCommand(@NonNull MediaSession session, @NonNull MediaSession.ControllerInfo controller, @NonNull SessionCommand customCommand, @NonNull Bundle args) {
-                if (customCommand.customAction.equals(ACTION_SKIP_NEXT)) {
-                    playNextInSequence();
-                    return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
-                } else if (customCommand.customAction.equals(ACTION_SKIP_BACK)) {
-                    player.seekTo(0);
-                    return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
-                } else if (customCommand.customAction.equals(ACTION_UPDATE_SETTINGS)) {
-                    commercialsPerSong = args.getInt("commercialsPerSong", commercialsPerSong);
-                    songsBeforeNews = args.getInt("songsBeforeNews", songsBeforeNews);
-                    boolean oldSingAlong = includeSingAlongs;
-                    includeSingAlongs = args.getBoolean("includeSingAlongs", includeSingAlongs);
-                    
-                    includeKrunch = args.getBoolean("includeKrunch", includeKrunch);
-                    includeKrhyme = args.getBoolean("includeKrhyme", includeKrhyme);
-                    includeMix = args.getBoolean("includeMix", includeMix);
-                    includeGenx = args.getBoolean("includeGenx", includeGenx);
-                    includeEzzzy = args.getBoolean("includeEzzzy", includeEzzzy);
-                    includeUnderground = args.getBoolean("includeUnderground", includeUnderground);
-                    
-                    // Re-load media if preference changed and station is active
-                    if (!currentStationId.isEmpty()) {
-                        loadMedia(currentStationId);
-                    }
-                    
-                    return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
+                switch (customCommand.customAction) {
+                    case ACTION_SKIP_NEXT:
+                        playNextInSequence();
+                        return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
+                    case ACTION_SKIP_BACK:
+                        player.seekTo(0);
+                        return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
+                    case ACTION_UPDATE_SETTINGS:
+                        commercialsPerSong = args.getInt("commercialsPerSong", commercialsPerSong);
+                        songsBeforeNews = args.getInt("songsBeforeNews", songsBeforeNews);
+                        includeSingAlongs = args.getBoolean("includeSingAlongs", includeSingAlongs);
+
+                        includeKrunch = args.getBoolean("includeKrunch", includeKrunch);
+                        includeKrhyme = args.getBoolean("includeKrhyme", includeKrhyme);
+                        includeMix = args.getBoolean("includeMix", includeMix);
+                        includeGenx = args.getBoolean("includeGenx", includeGenx);
+                        includeEzzzy = args.getBoolean("includeEzzzy", includeEzzzy);
+                        includeUndrgrnd = args.getBoolean("includeUndrgrnd", includeUndrgrnd);
+
+                        // Re-load media if preference changed and station is active
+                        if (!currentStationId.isEmpty()) {
+                            loadMedia(currentStationId);
+                        }
+
+                        return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
                 }
                 return MediaLibrarySession.Callback.super.onCustomCommand(session, controller, customCommand, args);
             }
@@ -305,7 +304,7 @@ public class MediaPlayerService extends MediaLibraryService {
             register_startMixRadio();
             register_startGenxRadio();
             register_startEzzzyRadio();
-            register_startUndergroundRadio();
+            register_startUndrgrndRadio();
         }
 
         player.addListener(new Player.Listener() {
@@ -348,16 +347,13 @@ public class MediaPlayerService extends MediaLibraryService {
         }
         
         // Remove suffixes first to avoid matching special cases incorrectly
-        boolean isSingAlong = false;
         String suffix = "";
         if (title.endsWith("male1") || title.endsWith("male2") || title.endsWith("male3")) {
             suffix = " (Male Sing Along)";
             title = title.substring(0, title.length() - 5);
-            isSingAlong = true;
         } else if (title.endsWith("female1") || title.endsWith("female2") || title.endsWith("female3")) {
             suffix = " (Female Sing Along)";
             title = title.substring(0, title.length() - 7);
-            isSingAlong = true;
         }
         
         // General replacements
@@ -444,7 +440,7 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("toobaboogie")) title = "Tooba Boogie";
         else if (title.equalsIgnoreCase("walkietalkie")) title = "Walkie Talkie";
         else if (title.equalsIgnoreCase("whistlehappy")) title = "Whistle Happy";
-        // Underground
+        // Undrgrnd
         else if (title.equalsIgnoreCase("andshewoulddarkenthememory")) title = "And She Would Darken The Memory";
         else if (title.equalsIgnoreCase("callinthedebts")) title = "Call In The Debts";
         else if (title.equalsIgnoreCase("cheeriton")) title = "Cheer It On";
@@ -459,7 +455,7 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("terror")) title = "Terror";
         else if (title.equalsIgnoreCase("thirdgearscratch")) title = "Third Gear Scratch";
         else if (title.equalsIgnoreCase("westernbiographic")) title = "Western Biographic";
-        else if (title.length() > 0) {
+        else if (!title.isEmpty()) {
             title = title.substring(0, 1).toUpperCase() + title.substring(1);
         }
         
@@ -506,7 +502,7 @@ public class MediaPlayerService extends MediaLibraryService {
             case "mix": currentStationName = "Mix Radio"; break;
             case "genx": currentStationName = "GenX Radio"; break;
             case "ezzzy": currentStationName = "Ezzzy Radio"; break;
-            case "underground": currentStationName = "Underground Radio"; break;
+            case "undrgrnd": currentStationName = "Undrgrnd Radio"; break;
         }
         
         player.stop();
@@ -568,7 +564,7 @@ public class MediaPlayerService extends MediaLibraryService {
         unregisterReceiver(startMixRadio);
         unregisterReceiver(startGenxRadio);
         unregisterReceiver(startEzzzyRadio);
-        unregisterReceiver(startUndergroundRadio);
+        unregisterReceiver(startUndrgrndRadio);
     }
 
     private void loadMedia(String radio) {
@@ -597,7 +593,7 @@ public class MediaPlayerService extends MediaLibraryService {
                 else if (name.startsWith("mix_") && includeMix) categorizeFile(name);
                 else if (name.startsWith("genx_") && includeGenx) categorizeFile(name);
                 else if (name.startsWith("ezzzy_") && includeEzzzy) categorizeFile(name);
-                else if (name.startsWith("underground_") && includeUnderground) categorizeFile(name);
+                else if (name.startsWith("underground_") && includeUndrgrnd) categorizeFile(name);
             } else if (name.startsWith(radio.toLowerCase() + "_")) {
                 categorizeFile(name);
             }
@@ -797,7 +793,7 @@ public class MediaPlayerService extends MediaLibraryService {
             if (!songGroups.containsKey(baseName)) {
                 songGroups.put(baseName, new ArrayList<>());
             }
-            songGroups.get(baseName).add(song);
+            Objects.requireNonNull(songGroups.get(baseName)).add(song);
         }
         
         List<String> keys = new ArrayList<>(songGroups.keySet());
@@ -807,16 +803,18 @@ public class MediaPlayerService extends MediaLibraryService {
             List<String> variants = songGroups.get(key);
             if (!includeSingAlongs) {
                 // Only find the non-singalong version (the one that doesn't have suffix)
-                for (String v : variants) {
-                    if (!v.endsWith("male1") && !v.endsWith("male2") && !v.endsWith("male3") &&
-                        !v.endsWith("female1") && !v.endsWith("female2") && !v.endsWith("female3")) {
-                        songQueue.add(v);
-                        break;
+                if (variants != null) {
+                    for (String v : variants) {
+                        if (!v.endsWith("male1") && !v.endsWith("male2") && !v.endsWith("male3") &&
+                            !v.endsWith("female1") && !v.endsWith("female2") && !v.endsWith("female3")) {
+                            songQueue.add(v);
+                            break;
+                        }
                     }
                 }
             } else {
                 // Randomly pick one from variants
-                songQueue.add(variants.get(random.nextInt(variants.size())));
+                songQueue.add(Objects.requireNonNull(variants).get(random.nextInt(variants.size())));
             }
         }
     }
@@ -899,7 +897,7 @@ public class MediaPlayerService extends MediaLibraryService {
         registerReceiver(startEzzzyRadio, filter, RECEIVER_EXPORTED);
     }
 
-    private final BroadcastReceiver startUndergroundRadio = new BroadcastReceiver() {
+    private final BroadcastReceiver startUndrgrndRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             startRadio("underground");
@@ -907,8 +905,8 @@ public class MediaPlayerService extends MediaLibraryService {
     };
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startUndergroundRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_UNDERGROUND_RADIO);
-        registerReceiver(startUndergroundRadio, filter, RECEIVER_EXPORTED);
+    private void register_startUndrgrndRadio() {
+        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_UNDRGRND_RADIO);
+        registerReceiver(startUndrgrndRadio, filter, RECEIVER_EXPORTED);
     }
 }

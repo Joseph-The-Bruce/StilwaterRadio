@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionCommand;
 import androidx.media3.session.SessionToken;
@@ -40,7 +41,6 @@ import com.google.android.material.slider.Slider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean includeMix = true;
     private boolean includeGenx = true;
     private boolean includeEzzzy = true;
-    private boolean includeUnderground = true;
+    private boolean includeUndrgrnd = true;
 
     public static final String PREFS_NAME = "SaintsRadioPrefs";
     private static final String KEY_COMMERCIALS = "commercialsPerSong";
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INCLUDE_MIX = "includeMix";
     private static final String KEY_INCLUDE_GENX = "includeGenx";
     private static final String KEY_INCLUDE_EZZZY = "includeEzzzy";
-    private static final String KEY_INCLUDE_UNDERGROUND = "includeUnderground";
+    private static final String KEY_INCLUDE_UNDRGRND = "includeUndrgrnd";
 
     public static final String Broadcast_START_SAINTS_RADIO = "com.example.saintsrowradio.StartSaintsRadio";
     public static final String Broadcast_START_KRUNCH_RADIO = "com.example.saintsrowradio.StartKrunchRadio";
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_START_MIX_RADIO = "com.example.saintsrowradio.StartMixRadio";
     public static final String Broadcast_START_GENX_RADIO = "com.example.saintsrowradio.StartGenxRadio";
     public static final String Broadcast_START_EZZZY_RADIO = "com.example.saintsrowradio.StartEzzzyRadio";
-    public static final String Broadcast_START_UNDERGROUND_RADIO = "com.example.saintsrowradio.StartUndergroundRadio";
+    public static final String Broadcast_START_UNDRGRND_RADIO = "com.example.saintsrowradio.StartUndrgrndRadio";
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -103,12 +103,30 @@ public class MainActivity extends AppCompatActivity {
             controllerFuture.addListener(() -> {
                 try {
                     mediaController = controllerFuture.get();
+                    mediaController.addListener(new Player.Listener() {
+                        @Override
+                        public void onIsPlayingChanged(boolean isPlaying) {
+                            updatePlayPauseButton(isPlaying);
+                        }
+                    });
                     // Sync settings to service immediately after connection
                     updateServiceSettings();
+                    updatePlayPauseButton(mediaController.isPlaying());
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }, MoreExecutors.directExecutor());
+        }
+    }
+
+    private void updatePlayPauseButton(boolean isPlaying) {
+        ImageButton playPauseButton = findViewById(R.id.playPauseButton);
+        if (playPauseButton != null) {
+            if (isPlaying) {
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            } else {
+                playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+            }
         }
     }
 
@@ -173,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         includeMix = prefs.getBoolean(KEY_INCLUDE_MIX, true);
         includeGenx = prefs.getBoolean(KEY_INCLUDE_GENX, true);
         includeEzzzy = prefs.getBoolean(KEY_INCLUDE_EZZZY, true);
-        includeUnderground = prefs.getBoolean(KEY_INCLUDE_UNDERGROUND, true);
+        includeUndrgrnd = prefs.getBoolean(KEY_INCLUDE_UNDRGRND, true);
     }
 
     private void saveSettings() {
@@ -189,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_INCLUDE_MIX, includeMix);
         editor.putBoolean(KEY_INCLUDE_GENX, includeGenx);
         editor.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
-        editor.putBoolean(KEY_INCLUDE_UNDERGROUND, includeUnderground);
+        editor.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
         
         editor.apply();
     }
@@ -206,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
             args.putBoolean(KEY_INCLUDE_MIX, includeMix);
             args.putBoolean(KEY_INCLUDE_GENX, includeGenx);
             args.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
-            args.putBoolean(KEY_INCLUDE_UNDERGROUND, includeUnderground);
+            args.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
             
             mediaController.sendCustomCommand(new SessionCommand("ACTION_UPDATE_SETTINGS", Bundle.EMPTY), args);
         }
@@ -299,14 +317,14 @@ public class MainActivity extends AppCompatActivity {
         final CheckBox mixCheck = createStationCheckbox(getString(R.string.station_mix), includeMix, checkboxTint);
         final CheckBox genxCheck = createStationCheckbox(getString(R.string.station_genx), includeGenx, checkboxTint);
         final CheckBox ezzzyCheck = createStationCheckbox(getString(R.string.station_ezzzy), includeEzzzy, checkboxTint);
-        final CheckBox undergroundCheck = createStationCheckbox(getString(R.string.station_underground), includeUnderground, checkboxTint);
+        final CheckBox undrgrndCheck = createStationCheckbox(getString(R.string.station_undrgrnd), includeUndrgrnd, checkboxTint);
         
         gridLayout.addView(krunchCheck);
         gridLayout.addView(krhymeCheck);
         gridLayout.addView(mixCheck);
         gridLayout.addView(genxCheck);
         gridLayout.addView(ezzzyCheck);
-        gridLayout.addView(undergroundCheck);
+        gridLayout.addView(undrgrndCheck);
         
         layout.addView(gridLayout);
 
@@ -320,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
             if (mixCheck.isChecked()) count++;
             if (genxCheck.isChecked()) count++;
             if (ezzzyCheck.isChecked()) count++;
-            if (undergroundCheck.isChecked()) count++;
+            if (undrgrndCheck.isChecked()) count++;
             
             if (count < 2) {
                 Toast.makeText(this, "Please select at least 2 stations for Saints Radio", Toast.LENGTH_LONG).show();
@@ -338,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
             includeMix = mixCheck.isChecked();
             includeGenx = genxCheck.isChecked();
             includeEzzzy = ezzzyCheck.isChecked();
-            includeUnderground = undergroundCheck.isChecked();
+            includeUndrgrnd = undrgrndCheck.isChecked();
             
             saveSettings();
             updateServiceSettings();
@@ -417,6 +435,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Play/Pause Button
+        ImageButton playPauseButton = findViewById(R.id.playPauseButton);
+        playPauseButton.setOnClickListener(v -> {
+            vibrate();
+            if (mediaController != null) {
+                if (mediaController.isPlaying()) {
+                    mediaController.pause();
+                } else {
+                    mediaController.play();
+                }
+            }
+        });
+
         // Skip Button
         ImageButton skipButton = findViewById(R.id.skipButton);
         skipButton.setOnClickListener(v -> {
@@ -433,6 +464,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggleButton3).setOnClickListener(v -> handleStationClick("mix", Broadcast_START_MIX_RADIO));
         findViewById(R.id.toggleButton4).setOnClickListener(v -> handleStationClick("genx", Broadcast_START_GENX_RADIO));
         findViewById(R.id.toggleButton5).setOnClickListener(v -> handleStationClick("ezzzy", Broadcast_START_EZZZY_RADIO));
-        findViewById(R.id.toggleButton6).setOnClickListener(v -> handleStationClick("underground", Broadcast_START_UNDERGROUND_RADIO));
+        findViewById(R.id.toggleButton6).setOnClickListener(v -> handleStationClick("undrgrnd", Broadcast_START_UNDRGRND_RADIO));
     }
 }
