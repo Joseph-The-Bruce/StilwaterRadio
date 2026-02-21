@@ -79,6 +79,8 @@ public class MediaPlayerService extends MediaLibraryService {
     boolean includeKrhyme = true;
     boolean includeMix = true;
     boolean includeGenx = true;
+    boolean includeEzzzy = true;
+    boolean includeUnderground = true;
 
     private boolean ongoingCall = false;
     private CallStateCallback phoneStateListener;
@@ -226,6 +228,8 @@ public class MediaPlayerService extends MediaLibraryService {
                     items.add(createPlayableItem("krhyme", "Krhyme Radio", "krhyme_tile"));
                     items.add(createPlayableItem("mix", "Mix Radio", "mix_tile"));
                     items.add(createPlayableItem("genx", "GenX Radio", "genx_tile"));
+                    items.add(createPlayableItem("ezzzy", "Ezzzy Radio", "ezzzy_tile"));
+                    items.add(createPlayableItem("underground", "Underground Radio", "underground_tile"));
                 }
                 return Futures.immediateFuture(LibraryResult.ofItemList(ImmutableList.copyOf(items), params));
             }
@@ -274,6 +278,8 @@ public class MediaPlayerService extends MediaLibraryService {
                     includeKrhyme = args.getBoolean("includeKrhyme", includeKrhyme);
                     includeMix = args.getBoolean("includeMix", includeMix);
                     includeGenx = args.getBoolean("includeGenx", includeGenx);
+                    includeEzzzy = args.getBoolean("includeEzzzy", includeEzzzy);
+                    includeUnderground = args.getBoolean("includeUnderground", includeUnderground);
                     
                     // Re-load media if preference changed and station is active
                     if (!currentStationId.isEmpty()) {
@@ -298,6 +304,8 @@ public class MediaPlayerService extends MediaLibraryService {
             register_startKrhymeRadio();
             register_startMixRadio();
             register_startGenxRadio();
+            register_startEzzzyRadio();
+            register_startUndergroundRadio();
         }
 
         player.addListener(new Player.Listener() {
@@ -374,7 +382,7 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("goodgirl")) title = "Good Girl";
         else if (title.equalsIgnoreCase("handsup")) title = "Hands Up";
         else if (title.equalsIgnoreCase("iluvit")) title = "I Luv It";
-        else if (title.equalsIgnoreCase("meandyou")) title = "Me & U";
+        else if (title.equalsIgnoreCase("meandu")) title = "Me & U";
         else if (title.equalsIgnoreCase("nystateofmind")) title = "N.Y. State Of Mind";
         else if (title.equalsIgnoreCase("onething")) title = "One Thing";
         else if (title.equalsIgnoreCase("ridininthatblackjoint")) title = "Ridin' In That Black Joint";
@@ -411,6 +419,46 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("sisterchristian")) title = "Sister Christian";
         else if (title.equalsIgnoreCase("karmachameleon")) title = "Karma Chameleon";
         else if (title.equalsIgnoreCase("thefinalcountdown")) title = "The Final Countdown";
+        // Ezzzy
+        else if (title.equalsIgnoreCase("acielitolindo")) title = "A Cielito Lindo";
+        else if (title.equalsIgnoreCase("agirllikeyou")) title = "A Girl Like You";
+        else if (title.equalsIgnoreCase("asunnydayinheidelberg")) title = "A Sunny Day In Heidelberg";
+        else if (title.equalsIgnoreCase("bachelorsamba")) title = "Bachelor Samba";
+        else if (title.equalsIgnoreCase("bergundtal")) title = "Berg Und Tal";
+        else if (title.equalsIgnoreCase("bossacubana")) title = "Bossa Cubana";
+        else if (title.equalsIgnoreCase("chansonpourtoi")) title = "Chanson Pour Toi";
+        else if (title.equalsIgnoreCase("coconuts")) title = "Coconuts";
+        else if (title.equalsIgnoreCase("colonieceleste")) title = "Colonie Celeste";
+        else if (title.equalsIgnoreCase("dancingontheavenue")) title = "Dancing On The Avenue";
+        else if (title.equalsIgnoreCase("dolcevita")) title = "Dolce Vita";
+        else if (title.equalsIgnoreCase("facetoface")) title = "Face To Face";
+        else if (title.equalsIgnoreCase("jarabetapatio")) title = "Jarabe Tapatio";
+        else if (title.equalsIgnoreCase("juststrollingalong")) title = "Just Strolling Along";
+        else if (title.equalsIgnoreCase("kalamazoostyle")) title = "Kalamazoo Style";
+        else if (title.equalsIgnoreCase("loveforlife")) title = "Love For Life";
+        else if (title.equalsIgnoreCase("marvelloussingersremix")) title = "Marvellous Singers Remix";
+        else if (title.equalsIgnoreCase("naughtybutnice")) title = "Naughty But Nice";
+        else if (title.equalsIgnoreCase("stereochacha")) title = "Stereo Cha-Cha";
+        else if (title.equalsIgnoreCase("swingpaname")) title = "Swing Paname";
+        else if (title.equalsIgnoreCase("tchoupatwist")) title = "Tchoupa Twist";
+        else if (title.equalsIgnoreCase("toobaboogie")) title = "Tooba Boogie";
+        else if (title.equalsIgnoreCase("walkietalkie")) title = "Walkie Talkie";
+        else if (title.equalsIgnoreCase("whistlehappy")) title = "Whistle Happy";
+        // Underground
+        else if (title.equalsIgnoreCase("andshewoulddarkenthememory")) title = "And She Would Darken The Memory";
+        else if (title.equalsIgnoreCase("callinthedebts")) title = "Call In The Debts";
+        else if (title.equalsIgnoreCase("cheeriton")) title = "Cheer It On";
+        else if (title.equalsIgnoreCase("deadfriends")) title = "Dead Friends";
+        else if (title.equalsIgnoreCase("dontcallitaghetto")) title = "Don't Call It A Ghetto";
+        else if (title.equalsIgnoreCase("everysinglelinemeanssomething")) title = "Every Single Line Means Something";
+        else if (title.equalsIgnoreCase("forreal")) title = "For Real";
+        else if (title.equalsIgnoreCase("hazelst")) title = "Hazel St.";
+        else if (title.equalsIgnoreCase("hearsyourfuture")) title = "Hear's Your Future";
+        else if (title.equalsIgnoreCase("houseofcards")) title = "House Of Cards";
+        else if (title.equalsIgnoreCase("shoottherunner")) title = "Shoot The Runner";
+        else if (title.equalsIgnoreCase("terror")) title = "Terror";
+        else if (title.equalsIgnoreCase("thirdgearscratch")) title = "Third Gear Scratch";
+        else if (title.equalsIgnoreCase("westernbiographic")) title = "Western Biographic";
         else if (title.length() > 0) {
             title = title.substring(0, 1).toUpperCase() + title.substring(1);
         }
@@ -457,6 +505,8 @@ public class MediaPlayerService extends MediaLibraryService {
             case "krhyme": currentStationName = "Krhyme Radio"; break;
             case "mix": currentStationName = "Mix Radio"; break;
             case "genx": currentStationName = "GenX Radio"; break;
+            case "ezzzy": currentStationName = "Ezzzy Radio"; break;
+            case "underground": currentStationName = "Underground Radio"; break;
         }
         
         player.stop();
@@ -517,6 +567,8 @@ public class MediaPlayerService extends MediaLibraryService {
         unregisterReceiver(startKrhymeRadio);
         unregisterReceiver(startMixRadio);
         unregisterReceiver(startGenxRadio);
+        unregisterReceiver(startEzzzyRadio);
+        unregisterReceiver(startUndergroundRadio);
     }
 
     private void loadMedia(String radio) {
@@ -544,6 +596,8 @@ public class MediaPlayerService extends MediaLibraryService {
                 else if (name.startsWith("krhyme_") && includeKrhyme) categorizeFile(name);
                 else if (name.startsWith("mix_") && includeMix) categorizeFile(name);
                 else if (name.startsWith("genx_") && includeGenx) categorizeFile(name);
+                else if (name.startsWith("ezzzy_") && includeEzzzy) categorizeFile(name);
+                else if (name.startsWith("underground_") && includeUnderground) categorizeFile(name);
             } else if (name.startsWith(radio.toLowerCase() + "_")) {
                 categorizeFile(name);
             }
@@ -565,7 +619,7 @@ public class MediaPlayerService extends MediaLibraryService {
             newsIntros.add(name);
         } else if (name.contains("outro")) {
             outros.add(name);
-        } else if (name.contains("theme")) {
+        } else if (name.contains("_theme")) {
             themes.add(name);
         } else if (!name.startsWith("shared_")) {
             songs.add(name);
@@ -830,5 +884,31 @@ public class MediaPlayerService extends MediaLibraryService {
     private void register_startGenxRadio() {
         IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_GENX_RADIO);
         registerReceiver(startGenxRadio, filter, RECEIVER_EXPORTED);
+    }
+
+    private final BroadcastReceiver startEzzzyRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("ezzzy");
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void register_startEzzzyRadio() {
+        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_EZZZY_RADIO);
+        registerReceiver(startEzzzyRadio, filter, RECEIVER_EXPORTED);
+    }
+
+    private final BroadcastReceiver startUndergroundRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("underground");
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void register_startUndergroundRadio() {
+        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_UNDERGROUND_RADIO);
+        registerReceiver(startUndergroundRadio, filter, RECEIVER_EXPORTED);
     }
 }

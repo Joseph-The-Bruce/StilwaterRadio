@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean includeKrhyme = true;
     private boolean includeMix = true;
     private boolean includeGenx = true;
+    private boolean includeEzzzy = true;
+    private boolean includeUnderground = true;
 
     public static final String PREFS_NAME = "SaintsRadioPrefs";
     private static final String KEY_COMMERCIALS = "commercialsPerSong";
@@ -71,12 +73,16 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INCLUDE_KRHYME = "includeKrhyme";
     private static final String KEY_INCLUDE_MIX = "includeMix";
     private static final String KEY_INCLUDE_GENX = "includeGenx";
+    private static final String KEY_INCLUDE_EZZZY = "includeEzzzy";
+    private static final String KEY_INCLUDE_UNDERGROUND = "includeUnderground";
 
     public static final String Broadcast_START_SAINTS_RADIO = "com.example.saintsrowradio.StartSaintsRadio";
     public static final String Broadcast_START_KRUNCH_RADIO = "com.example.saintsrowradio.StartKrunchRadio";
     public static final String Broadcast_START_KRHYME_RADIO = "com.example.saintsrowradio.StartKrhymeRadio";
     public static final String Broadcast_START_MIX_RADIO = "com.example.saintsrowradio.StartMixRadio";
     public static final String Broadcast_START_GENX_RADIO = "com.example.saintsrowradio.StartGenxRadio";
+    public static final String Broadcast_START_EZZZY_RADIO = "com.example.saintsrowradio.StartEzzzyRadio";
+    public static final String Broadcast_START_UNDERGROUND_RADIO = "com.example.saintsrowradio.StartUndergroundRadio";
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -166,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
         includeKrhyme = prefs.getBoolean(KEY_INCLUDE_KRHYME, true);
         includeMix = prefs.getBoolean(KEY_INCLUDE_MIX, true);
         includeGenx = prefs.getBoolean(KEY_INCLUDE_GENX, true);
+        includeEzzzy = prefs.getBoolean(KEY_INCLUDE_EZZZY, true);
+        includeUnderground = prefs.getBoolean(KEY_INCLUDE_UNDERGROUND, true);
     }
 
     private void saveSettings() {
@@ -180,6 +188,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_INCLUDE_KRHYME, includeKrhyme);
         editor.putBoolean(KEY_INCLUDE_MIX, includeMix);
         editor.putBoolean(KEY_INCLUDE_GENX, includeGenx);
+        editor.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
+        editor.putBoolean(KEY_INCLUDE_UNDERGROUND, includeUnderground);
         
         editor.apply();
     }
@@ -195,6 +205,8 @@ public class MainActivity extends AppCompatActivity {
             args.putBoolean(KEY_INCLUDE_KRHYME, includeKrhyme);
             args.putBoolean(KEY_INCLUDE_MIX, includeMix);
             args.putBoolean(KEY_INCLUDE_GENX, includeGenx);
+            args.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
+            args.putBoolean(KEY_INCLUDE_UNDERGROUND, includeUnderground);
             
             mediaController.sendCustomCommand(new SessionCommand("ACTION_UPDATE_SETTINGS", Bundle.EMPTY), args);
         }
@@ -286,11 +298,15 @@ public class MainActivity extends AppCompatActivity {
         final CheckBox krhymeCheck = createStationCheckbox(getString(R.string.station_krhyme), includeKrhyme, checkboxTint);
         final CheckBox mixCheck = createStationCheckbox(getString(R.string.station_mix), includeMix, checkboxTint);
         final CheckBox genxCheck = createStationCheckbox(getString(R.string.station_genx), includeGenx, checkboxTint);
+        final CheckBox ezzzyCheck = createStationCheckbox(getString(R.string.station_ezzzy), includeEzzzy, checkboxTint);
+        final CheckBox undergroundCheck = createStationCheckbox(getString(R.string.station_underground), includeUnderground, checkboxTint);
         
         gridLayout.addView(krunchCheck);
         gridLayout.addView(krhymeCheck);
         gridLayout.addView(mixCheck);
         gridLayout.addView(genxCheck);
+        gridLayout.addView(ezzzyCheck);
+        gridLayout.addView(undergroundCheck);
         
         layout.addView(gridLayout);
 
@@ -303,6 +319,8 @@ public class MainActivity extends AppCompatActivity {
             if (krhymeCheck.isChecked()) count++;
             if (mixCheck.isChecked()) count++;
             if (genxCheck.isChecked()) count++;
+            if (ezzzyCheck.isChecked()) count++;
+            if (undergroundCheck.isChecked()) count++;
             
             if (count < 2) {
                 Toast.makeText(this, "Please select at least 2 stations for Saints Radio", Toast.LENGTH_LONG).show();
@@ -319,6 +337,8 @@ public class MainActivity extends AppCompatActivity {
             includeKrhyme = krhymeCheck.isChecked();
             includeMix = mixCheck.isChecked();
             includeGenx = genxCheck.isChecked();
+            includeEzzzy = ezzzyCheck.isChecked();
+            includeUnderground = undergroundCheck.isChecked();
             
             saveSettings();
             updateServiceSettings();
@@ -412,5 +432,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggleButton2).setOnClickListener(v -> handleStationClick("krhyme", Broadcast_START_KRHYME_RADIO));
         findViewById(R.id.toggleButton3).setOnClickListener(v -> handleStationClick("mix", Broadcast_START_MIX_RADIO));
         findViewById(R.id.toggleButton4).setOnClickListener(v -> handleStationClick("genx", Broadcast_START_GENX_RADIO));
+        findViewById(R.id.toggleButton5).setOnClickListener(v -> handleStationClick("ezzzy", Broadcast_START_EZZZY_RADIO));
+        findViewById(R.id.toggleButton6).setOnClickListener(v -> handleStationClick("underground", Broadcast_START_UNDERGROUND_RADIO));
     }
 }
