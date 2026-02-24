@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class MediaPlayerService extends MediaLibraryService {
     int commercialsPerSong = 3;
     int songsBeforeNews = 5;
     boolean includeSingAlongs = false;
+    boolean disableMenuMusic = false;
     
     // Saints Radio inclusions
     boolean includeKrunch = true;
@@ -141,6 +143,10 @@ public class MediaPlayerService extends MediaLibraryService {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Load initial disableMenuMusic setting from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        disableMenuMusic = prefs.getBoolean("disableMenuMusic", false);
 
         // Configure Audio Attributes for Media Playback
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -273,6 +279,9 @@ public class MediaPlayerService extends MediaLibraryService {
                         commercialsPerSong = args.getInt("commercialsPerSong", commercialsPerSong);
                         songsBeforeNews = args.getInt("songsBeforeNews", songsBeforeNews);
                         includeSingAlongs = args.getBoolean("includeSingAlongs", includeSingAlongs);
+                        
+                        boolean oldDisableMenuMusic = disableMenuMusic;
+                        disableMenuMusic = args.getBoolean("disableMenuMusic", disableMenuMusic);
 
                         includeKrunch = args.getBoolean("includeKrunch", includeKrunch);
                         includeKrhyme = args.getBoolean("includeKrhyme", includeKrhyme);
@@ -280,6 +289,11 @@ public class MediaPlayerService extends MediaLibraryService {
                         includeGenx = args.getBoolean("includeGenx", includeGenx);
                         includeEzzzy = args.getBoolean("includeEzzzy", includeEzzzy);
                         includeUndrgrnd = args.getBoolean("includeUndrgrnd", includeUndrgrnd);
+
+                        // If menu music was just disabled and is currently playing, stop it.
+                        if (disableMenuMusic && !oldDisableMenuMusic && currentStationId.isEmpty()) {
+                            player.stop();
+                        }
 
                         // Re-load media if preference changed and station is active
                         if (!currentStationId.isEmpty()) {
@@ -321,6 +335,8 @@ public class MediaPlayerService extends MediaLibraryService {
     }
 
     private void playPauseMenuMusic() {
+        if (disableMenuMusic) return;
+
         @SuppressLint("DiscouragedApi")
         int resId = getResources().getIdentifier("shared_pausemenu", "raw", getPackageName());
         if (resId != 0) {

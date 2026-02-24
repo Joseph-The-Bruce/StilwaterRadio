@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -33,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionCommand;
@@ -42,6 +44,7 @@ import com.google.android.material.slider.Slider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private int songsBeforeNews = 5;
     private boolean includeSingAlongs = false;
     private boolean skipSplash = false;
+    private boolean disableMenuMusic = false;
     
     // Saints Radio station inclusions
     private boolean includeKrunch = true;
@@ -70,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_NEWS = "songsBeforeNews";
     private static final String KEY_SING_ALONGS = "includeSingAlongs";
     public static final String KEY_SKIP_SPLASH = "skipSplash";
+    private static final String KEY_DISABLE_MENU_MUSIC = "disableMenuMusic";
     
     private static final String KEY_INCLUDE_KRUNCH = "includeKrunch";
     private static final String KEY_INCLUDE_KRHYME = "includeKrhyme";
@@ -227,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         songsBeforeNews = prefs.getInt(KEY_NEWS, 5);
         includeSingAlongs = prefs.getBoolean(KEY_SING_ALONGS, false);
         skipSplash = prefs.getBoolean(KEY_SKIP_SPLASH, false);
+        disableMenuMusic = prefs.getBoolean(KEY_DISABLE_MENU_MUSIC, false);
         
         includeKrunch = prefs.getBoolean(KEY_INCLUDE_KRUNCH, true);
         includeKrhyme = prefs.getBoolean(KEY_INCLUDE_KRHYME, true);
@@ -243,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(KEY_NEWS, songsBeforeNews);
         editor.putBoolean(KEY_SING_ALONGS, includeSingAlongs);
         editor.putBoolean(KEY_SKIP_SPLASH, skipSplash);
+        editor.putBoolean(KEY_DISABLE_MENU_MUSIC, disableMenuMusic);
         
         editor.putBoolean(KEY_INCLUDE_KRUNCH, includeKrunch);
         editor.putBoolean(KEY_INCLUDE_KRHYME, includeKrhyme);
@@ -260,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
             args.putInt(KEY_COMMERCIALS, commercialsPerSong);
             args.putInt(KEY_NEWS, songsBeforeNews);
             args.putBoolean(KEY_SING_ALONGS, includeSingAlongs);
+            args.putBoolean(KEY_DISABLE_MENU_MUSIC, disableMenuMusic);
             
             args.putBoolean(KEY_INCLUDE_KRUNCH, includeKrunch);
             args.putBoolean(KEY_INCLUDE_KRHYME, includeKrhyme);
@@ -343,6 +351,20 @@ public class MainActivity extends AppCompatActivity {
             skipSplashCheckbox.setButtonTintList(checkboxTint);
         }
         layout.addView(skipSplashCheckbox);
+
+        // Disable Menu Music Label
+        final TextView disableMenuMusicLabel = new TextView(this);
+        disableMenuMusicLabel.setText("Disable Menu Music");
+        disableMenuMusicLabel.setPadding(0, 40, 0, 0);
+        layout.addView(disableMenuMusicLabel);
+
+        // Disable Menu Music Checkbox
+        final CheckBox disableMenuMusicCheckbox = new CheckBox(this);
+        disableMenuMusicCheckbox.setChecked(disableMenuMusic);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            disableMenuMusicCheckbox.setButtonTintList(checkboxTint);
+        }
+        layout.addView(disableMenuMusicCheckbox);
         
         // Saints Radio Station Inclusions
         final TextView saintsLabel = new TextView(this);
@@ -392,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
             songsBeforeNews = (int) newsSlider.getValue();
             includeSingAlongs = singAlongCheckbox.isChecked();
             skipSplash = skipSplashCheckbox.isChecked();
+            disableMenuMusic = disableMenuMusicCheckbox.isChecked();
             
             includeKrunch = krunchCheck.isChecked();
             includeKrhyme = krhymeCheck.isChecked();
