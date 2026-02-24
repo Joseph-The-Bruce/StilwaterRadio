@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -532,6 +533,11 @@ public class MediaPlayerService extends MediaLibraryService {
             displayTitle = formatSongTitle(rawName);
         }
 
+        Bundle extras = new Bundle();
+        if (type != null) {
+            extras.putString("type", type);
+        }
+
         return new MediaItem.Builder()
                 .setMediaId(rawName)
                 .setUri("rawresource:///" + resId)
@@ -539,6 +545,7 @@ public class MediaPlayerService extends MediaLibraryService {
                         .setTitle(displayTitle)
                         .setArtist(currentStationName)
                         .setArtworkUri(getUriForDrawable(iconName))
+                        .setExtras(extras)
                         .build())
                 .build();
     }

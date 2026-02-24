@@ -14,6 +14,7 @@ import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -41,6 +42,7 @@ import com.google.android.material.slider.Slider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_START_EZZZY_RADIO = "com.example.saintsrowradio.StartEzzzyRadio";
     public static final String Broadcast_START_UNDRGRND_RADIO = "com.example.saintsrowradio.StartUndrgrndRadio";
 
+    private final int[] backgrounds = {
+            R.drawable.saintsrow2,
+            R.drawable.promo,
+            R.drawable.saints_promo,
+            R.drawable.saints_large_logo,
+            R.drawable.white_shirt,
+            R.drawable.white_suit
+    };
+    private int currentBackgroundResId = R.drawable.saintsrow2;
+    private final Random random = new Random();
+
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -117,6 +130,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, MoreExecutors.directExecutor());
         }
+    }
+
+    private void changeBackground() {
+        currentBackgroundResId = backgrounds[random.nextInt(backgrounds.length)];
+        applyBackground();
+    }
+
+    private void applyBackground() {
+        View mainView = findViewById(R.id.main);
+        if (mainView != null) {
+            boolean isPortrait = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
+            int bgToApply = currentBackgroundResId;
+            
+            if (isPortrait) {
+                if (currentBackgroundResId == R.drawable.saints_large_logo) {
+                    bgToApply = R.drawable.saints_logo_pattern_portrait;
+                } else if (currentBackgroundResId == R.drawable.saintsrow2) {
+                    bgToApply = R.drawable.saintsrow2_portrait;
+                }
+            }
+            
+            mainView.setBackgroundResource(bgToApply);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentBackground", currentBackgroundResId);
     }
 
     private void updatePlayPauseButton(boolean isPlaying) {
@@ -406,8 +448,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadSettings();
+        if (savedInstanceState != null) {
+            currentBackgroundResId = savedInstanceState.getInt("currentBackground", R.drawable.saintsrow2);
+        } else {
+            // New startup - pick random background
+            currentBackgroundResId = backgrounds[random.nextInt(backgrounds.length)];
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        applyBackground();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
