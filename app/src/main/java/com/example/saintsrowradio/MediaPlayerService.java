@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,7 @@ import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
+import androidx.media3.common.ForwardingPlayer;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Player;
@@ -145,7 +145,7 @@ public class MediaPlayerService extends MediaLibraryService {
         super.onCreate();
 
         // Load initial disableMenuMusic setting from SharedPreferences
-        SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("SaintsRadioPrefs", MODE_PRIVATE);
         disableMenuMusic = prefs.getBoolean("disableMenuMusic", false);
 
         // Configure Audio Attributes for Media Playback
@@ -157,6 +157,28 @@ public class MediaPlayerService extends MediaLibraryService {
         player = new ExoPlayer.Builder(this)
                 .setAudioAttributes(audioAttributes, true) // true = handle audio focus
                 .build();
+
+        ForwardingPlayer forwardingPlayer = new ForwardingPlayer(player) {
+            @Override
+            public void seekToNext() {
+                playNextInSequence();
+            }
+
+            @Override
+            public void seekToNextMediaItem() {
+                playNextInSequence();
+            }
+
+            @Override
+            public void seekToPrevious() {
+                seekTo(0);
+            }
+
+            @Override
+            public void seekToPreviousMediaItem() {
+                seekTo(0);
+            }
+        };
 
         // Custom buttons for Android Auto / Expanded notifications
         CommandButton skipNextButton = new CommandButton.Builder()
@@ -253,18 +275,6 @@ public class MediaPlayerService extends MediaLibraryService {
                 return Futures.immediateFuture(mediaItems);
             }
 
-            @Override
-            public int onPlayerCommandRequest(@NonNull MediaSession session, @NonNull MediaSession.ControllerInfo controller, int playerCommand) {
-                if (playerCommand == Player.COMMAND_SEEK_TO_NEXT || playerCommand == Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM) {
-                    playNextInSequence();
-                    return SessionResult.RESULT_SUCCESS;
-                } else if (playerCommand == Player.COMMAND_SEEK_TO_PREVIOUS || playerCommand == Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM) {
-                    player.seekTo(0);
-                    return SessionResult.RESULT_SUCCESS;
-                }
-                return MediaLibrarySession.Callback.super.onPlayerCommandRequest(session, controller, playerCommand);
-            }
-
             @NonNull
             @Override
             public ListenableFuture<SessionResult> onCustomCommand(@NonNull MediaSession session, @NonNull MediaSession.ControllerInfo controller, @NonNull SessionCommand customCommand, @NonNull Bundle args) {
@@ -306,7 +316,7 @@ public class MediaPlayerService extends MediaLibraryService {
             }
         };
 
-        mediaLibrarySession = new MediaLibrarySession.Builder(this, player, callback)
+        mediaLibrarySession = new MediaLibrarySession.Builder(this, forwardingPlayer, callback)
                 .setCustomLayout(ImmutableList.of(skipNextButton))
                 .build();
 
@@ -466,7 +476,7 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("everysinglelinemeanssomething")) title = "Every Single Line Means Something";
         else if (title.equalsIgnoreCase("forreal")) title = "For Real";
         else if (title.equalsIgnoreCase("hazelst")) title = "Hazel St.";
-        else if (title.equalsIgnoreCase("hearsyourfuture")) title = "Hear's Your Future";
+        else if (title.equalsIgnoreCase("hearsyourfuture")) title = "Here's Your Future";
         else if (title.equalsIgnoreCase("houseofcards")) title = "House Of Cards";
         else if (title.equalsIgnoreCase("shoottherunner")) title = "Shoot The Runner";
         else if (title.equalsIgnoreCase("terror")) title = "Terror";
@@ -491,18 +501,7 @@ public class MediaPlayerService extends MediaLibraryService {
                 .build();
     }
 
-    private MediaItem createBrowsableItem(String id, String title, String iconName) {
-        return new MediaItem.Builder()
-                .setMediaId(id)
-                .setMediaMetadata(new MediaMetadata.Builder()
-                        .setTitle(title)
-                        .setArtworkUri(getUriForDrawable(iconName))
-                        .setIsBrowsable(true)
-                        .setIsPlayable(false)
-                        .build())
-                .build();
-    }
-
+    @SuppressLint("DiscouragedApi")
     private Uri getUriForDrawable(String name) {
         if (name == null || name.isEmpty()) return null;
         int resId = getResources().getIdentifier(name, "drawable", getPackageName());
@@ -549,11 +548,6 @@ public class MediaPlayerService extends MediaLibraryService {
             displayTitle = formatSongTitle(rawName);
         }
 
-        Bundle extras = new Bundle();
-        if (type != null) {
-            extras.putString("type", type);
-        }
-
         return new MediaItem.Builder()
                 .setMediaId(rawName)
                 .setUri("rawresource:///" + resId)
@@ -561,7 +555,6 @@ public class MediaPlayerService extends MediaLibraryService {
                         .setTitle(displayTitle)
                         .setArtist(currentStationName)
                         .setArtworkUri(getUriForDrawable(iconName))
-                        .setExtras(extras)
                         .build())
                 .build();
     }
@@ -616,7 +609,7 @@ public class MediaPlayerService extends MediaLibraryService {
                 else if (name.startsWith("mix_") && includeMix) categorizeFile(name);
                 else if (name.startsWith("genx_") && includeGenx) categorizeFile(name);
                 else if (name.startsWith("ezzzy_") && includeEzzzy) categorizeFile(name);
-                else if (name.startsWith("underground_") && includeUndrgrnd) categorizeFile(name);
+                else if (name.startsWith("undrgrnd_") && includeUndrgrnd) categorizeFile(name);
             } else if (name.startsWith(radio.toLowerCase() + "_")) {
                 categorizeFile(name);
             }
@@ -686,20 +679,18 @@ public class MediaPlayerService extends MediaLibraryService {
             
             // For matching intros/outros, strip sing-along suffixes
             String matchName = songName;
-            if (matchName != null) {
-                if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
-                    matchName = matchName.substring(0, matchName.length() - 5);
-                } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
-                    matchName = matchName.substring(0, matchName.length() - 7);
-                }
+            if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
+                matchName = matchName.substring(0, matchName.length() - 5);
+            } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
+                matchName = matchName.substring(0, matchName.length() - 7);
             }
             
             introList.clear();
             for (String intro : intros) {
-                if (matchName != null && intro.contains(matchName)) introList.add(intro);
+                if (intro.contains(matchName)) introList.add(intro);
             }
             for (String caller : callers) {
-                if (matchName != null && caller.contains(matchName)) introList.add(caller);
+                if (caller.contains(matchName)) introList.add(caller);
             }
             for (String intro : intros) {
                 if (intro.contains("_intro")) introList.add(intro);
@@ -721,17 +712,15 @@ public class MediaPlayerService extends MediaLibraryService {
         } else if (Objects.equals(soundType, "song")) {
             // For matching intros/outros, strip sing-along suffixes
             String matchName = songName;
-            if (matchName != null) {
-                if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
-                    matchName = matchName.substring(0, matchName.length() - 5);
-                } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
-                    matchName = matchName.substring(0, matchName.length() - 7);
-                }
+            if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
+                matchName = matchName.substring(0, matchName.length() - 5);
+            } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
+                matchName = matchName.substring(0, matchName.length() - 7);
             }
 
             outroList.clear();
             for (String outro : outros) {
-                if (matchName != null && outro.contains(matchName)) outroList.add(outro);
+                if (outro.contains(matchName)) outroList.add(outro);
             }
             for (String outro : outros) {
                 if (outro.contains("_outro")) outroList.add(outro);
@@ -923,7 +912,7 @@ public class MediaPlayerService extends MediaLibraryService {
     private final BroadcastReceiver startUndrgrndRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            startRadio("underground");
+            startRadio("undrgrnd");
         }
     };
 
