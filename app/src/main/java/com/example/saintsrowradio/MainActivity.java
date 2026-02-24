@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +34,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionCommand;
@@ -44,12 +43,12 @@ import com.google.android.material.slider.Slider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private MediaController mediaController;
     private ListenableFuture<MediaController> controllerFuture;
     private String activeStationId = "";
@@ -131,15 +130,10 @@ public class MainActivity extends AppCompatActivity {
                     updateServiceSettings();
                     updatePlayPauseButton(mediaController.isPlaying());
                 } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "MediaController connection failed", e);
                 }
             }, MoreExecutors.directExecutor());
         }
-    }
-
-    private void changeBackground() {
-        currentBackgroundResId = backgrounds[random.nextInt(backgrounds.length)];
-        applyBackground();
     }
 
     private void applyBackground() {
@@ -282,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showRotationSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Settings");
+        builder.setTitle(R.string.action_settings);
 
         ScrollView scrollView = new ScrollView(this);
         LinearLayout layout = new LinearLayout(this);
@@ -292,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Commercials Slider
         final TextView commLabel = new TextView(this);
-        commLabel.setText("Commercials after each song: " + commercialsPerSong);
+        commLabel.setText(getString(R.string.settings_commercials_label, commercialsPerSong));
         commLabel.setPadding(0, 20, 0, 0);
         layout.addView(commLabel);
 
@@ -301,12 +295,12 @@ public class MainActivity extends AppCompatActivity {
         commSlider.setValueTo(5f);
         commSlider.setStepSize(1f);
         commSlider.setValue((float) commercialsPerSong);
-        commSlider.addOnChangeListener((slider, value, fromUser) -> commLabel.setText("Commercials after each song: " + (int)value));
+        commSlider.addOnChangeListener((slider, value, fromUser) -> commLabel.setText(getString(R.string.settings_commercials_label, (int)value)));
         layout.addView(commSlider);
 
         // News Slider
         final TextView newsLabel = new TextView(this);
-        newsLabel.setText("Songs before news: " + songsBeforeNews);
+        newsLabel.setText(getString(R.string.settings_news_label, songsBeforeNews));
         newsLabel.setPadding(0, 40, 0, 0);
         layout.addView(newsLabel);
 
@@ -315,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
         newsSlider.setValueTo(10f);
         newsSlider.setStepSize(1f);
         newsSlider.setValue((float) songsBeforeNews);
-        newsSlider.addOnChangeListener((slider, value, fromUser) -> newsLabel.setText("Songs before news: " + (int)value));
+        newsSlider.addOnChangeListener((slider, value, fromUser) -> newsLabel.setText(getString(R.string.settings_news_label, (int)value)));
         layout.addView(newsSlider);
 
         // Get primary color from theme to match sliders and menu
@@ -326,16 +320,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Sing Along Label
         final TextView singAlongLabel = new TextView(this);
-        singAlongLabel.setText("Include Sing Alongs");
+        singAlongLabel.setText(R.string.settings_singalong_label);
         singAlongLabel.setPadding(0, 40, 0, 0);
         layout.addView(singAlongLabel);
 
         // Sing Along Checkbox
         final CheckBox singAlongCheckbox = new CheckBox(this);
         singAlongCheckbox.setChecked(includeSingAlongs);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            singAlongCheckbox.setButtonTintList(checkboxTint);
-        }
+        singAlongCheckbox.setButtonTintList(checkboxTint);
         layout.addView(singAlongCheckbox);
 
         // Skip Splash Label
@@ -347,23 +339,19 @@ public class MainActivity extends AppCompatActivity {
         // Skip Splash Checkbox
         final CheckBox skipSplashCheckbox = new CheckBox(this);
         skipSplashCheckbox.setChecked(skipSplash);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            skipSplashCheckbox.setButtonTintList(checkboxTint);
-        }
+        skipSplashCheckbox.setButtonTintList(checkboxTint);
         layout.addView(skipSplashCheckbox);
 
         // Disable Menu Music Label
         final TextView disableMenuMusicLabel = new TextView(this);
-        disableMenuMusicLabel.setText("Disable Menu Music");
+        disableMenuMusicLabel.setText(R.string.settings_menu_music_label);
         disableMenuMusicLabel.setPadding(0, 40, 0, 0);
         layout.addView(disableMenuMusicLabel);
 
         // Disable Menu Music Checkbox
         final CheckBox disableMenuMusicCheckbox = new CheckBox(this);
         disableMenuMusicCheckbox.setChecked(disableMenuMusic);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            disableMenuMusicCheckbox.setButtonTintList(checkboxTint);
-        }
+        disableMenuMusicCheckbox.setButtonTintList(checkboxTint);
         layout.addView(disableMenuMusicCheckbox);
         
         // Saints Radio Station Inclusions
@@ -436,9 +424,7 @@ public class MainActivity extends AppCompatActivity {
         CheckBox cb = new CheckBox(this);
         cb.setText(text);
         cb.setChecked(checked);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cb.setButtonTintList(tint);
-        }
+        cb.setButtonTintList(tint);
         return cb;
     }
 
