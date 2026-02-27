@@ -160,6 +160,17 @@ public class MediaPlayerService extends MediaLibraryService {
                 .build();
 
         ForwardingPlayer forwardingPlayer = new ForwardingPlayer(player) {
+            @NonNull
+            @Override
+            public Player.Commands getAvailableCommands() {
+                return super.getAvailableCommands().buildUpon()
+                        .add(Player.COMMAND_SEEK_TO_NEXT)
+                        .add(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                        .add(Player.COMMAND_SEEK_TO_PREVIOUS)
+                        .add(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                        .build();
+            }
+
             @Override
             public void seekToNext() {
                 playNextInSequence();
@@ -182,9 +193,9 @@ public class MediaPlayerService extends MediaLibraryService {
         };
 
         // Custom buttons for Android Auto / Expanded notifications
-        CommandButton skipNextButton = new CommandButton.Builder()
+        CommandButton skipNextButton = new CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setDisplayName("Skip Next")
-                .setIconResId(android.R.drawable.ic_media_next)
+                .setCustomIconResId(android.R.drawable.ic_media_next)
                 .setSessionCommand(new SessionCommand(ACTION_SKIP_NEXT, Bundle.EMPTY))
                 .build();
 
@@ -212,6 +223,7 @@ public class MediaPlayerService extends MediaLibraryService {
                 return new MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                         .setAvailablePlayerCommands(playerCommands)
                         .setAvailableSessionCommands(sessionCommands)
+                        .setCustomLayout(ImmutableList.of(skipNextButton))
                         .build();
             }
 
