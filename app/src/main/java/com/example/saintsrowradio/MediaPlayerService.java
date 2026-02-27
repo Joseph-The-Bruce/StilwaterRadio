@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -539,8 +540,19 @@ public class MediaPlayerService extends MediaLibraryService {
     }
 
     private MediaItem getMediaItemWithStationMetadata(String rawName, String itemTitle, String type) {
+        if (rawName == null) {
+            Log.e("Radio", "Attempted to load NULL resource name");
+            return null;
+        }
+
         @SuppressLint("DiscouragedApi")
         int resId = getResources().getIdentifier(rawName, "raw", getPackageName());
+
+        if (resId == 0) {
+            Log.e("Radio", "Resource not found: " + rawName);
+            return null;
+        }
+
         String iconName = currentStationId + "_logo";
         
         String displayTitle = itemTitle;
@@ -669,36 +681,10 @@ public class MediaPlayerService extends MediaLibraryService {
             if (songQueue.isEmpty()) {
                 generateSongQueue();
             }
-            currentSongFile = songQueue.remove(0);
 
-            if (currentSongFile.contains("_")) {
-                songName = currentSongFile.substring(currentSongFile.indexOf("_") + 1);
-            } else {
-                songName = currentSongFile;
-            }
-            
-            // For matching intros/outros, strip sing-along suffixes
-            String matchName = songName;
-            if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
-                matchName = matchName.substring(0, matchName.length() - 5);
-            } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
-                matchName = matchName.substring(0, matchName.length() - 7);
-            }
-            
-            introList.clear();
-            for (String intro : intros) {
-                if (intro.contains(matchName)) introList.add(intro);
-            }
-            for (String caller : callers) {
-                if (caller.contains(matchName)) introList.add(caller);
-            }
-            for (String intro : intros) {
-                if (intro.contains("_intro")) introList.add(intro);
-            }
-            
             if (!introList.isEmpty()) {
                 Collections.shuffle(introList);
-                player.setMediaItem(getMediaItemWithStationMetadata(introList.get(0), "Station Intro", "intro"));
+                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(introList.get(0), "Station Intro", "intro")));
                 soundType = "intro";
             } else {
                 soundType = "intro";
@@ -706,29 +692,21 @@ public class MediaPlayerService extends MediaLibraryService {
                 return;
             }
         } else if (Objects.equals(soundType, "intro")) {
-            player.setMediaItem(getMediaItemWithStationMetadata(currentSongFile, currentSongFile, "song"));
+            if (songQueue.isEmpty()) {
+                generateSongQueue();
+            }
+
+            player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(currentSongFile, currentSongFile, "song")));
             newsItr = newsItr + 1;
             soundType = "song";
         } else if (Objects.equals(soundType, "song")) {
-            // For matching intros/outros, strip sing-along suffixes
-            String matchName = songName;
-            if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
-                matchName = matchName.substring(0, matchName.length() - 5);
-            } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
-                matchName = matchName.substring(0, matchName.length() - 7);
+            if (songQueue.isEmpty()) {
+                generateSongQueue();
             }
 
-            outroList.clear();
-            for (String outro : outros) {
-                if (outro.contains(matchName)) outroList.add(outro);
-            }
-            for (String outro : outros) {
-                if (outro.contains("_outro")) outroList.add(outro);
-            }
-            
             if (!outroList.isEmpty()) {
                 Collections.shuffle(outroList);
-                player.setMediaItem(getMediaItemWithStationMetadata(outroList.get(0), "Station Outro", "outro"));
+                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(outroList.get(0), "Station Outro", "outro")));
                 soundType = "outro";
             } else {
                 soundType = "outro";
@@ -738,7 +716,7 @@ public class MediaPlayerService extends MediaLibraryService {
         } else if (Objects.equals(soundType, "outro") || (Objects.equals(soundType, "commercial") && (commItr < commercialsPerSong))) {
             if (commercialsPerSong > 0) {
                 String commercial = commercials.get(random.nextInt(commercials.size()));
-                player.setMediaItem(getMediaItemWithStationMetadata(commercial, "Commercial", "commercial"));
+                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(commercial, "Commercial", "commercial")));
                 commItr = commItr + 1;
                 soundType = "commercial";
             } else {
@@ -751,7 +729,7 @@ public class MediaPlayerService extends MediaLibraryService {
             if (songsBeforeNews > 0) {
                 Collections.shuffle(newsIntros);
                 if (!newsIntros.isEmpty()) {
-                    player.setMediaItem(getMediaItemWithStationMetadata(newsIntros.get(0), "News Intro", "newsIntro"));
+                    player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(newsIntros.get(0), "News Intro", "newsIntro")));
                     soundType = "newsIntro";
                     newsItr = 0;
                 } else {
@@ -767,7 +745,7 @@ public class MediaPlayerService extends MediaLibraryService {
         } else if (Objects.equals(soundType, "newsIntro")) {
             if (!news.isEmpty()) {
                 String newsItem = news.get(random.nextInt(news.size()));
-                player.setMediaItem(getMediaItemWithStationMetadata(newsItem, "News Report", "news"));
+                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(newsItem, "News Report", "news")));
                 soundType = "news";
             } else {
                 soundType = "news";
@@ -778,7 +756,7 @@ public class MediaPlayerService extends MediaLibraryService {
             commItr = 0;
             if (!themes.isEmpty()) {
                 String theme = themes.get(random.nextInt(themes.size()));
-                player.setMediaItem(getMediaItemWithStationMetadata(theme, "Station Theme", "theme"));
+                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(theme, "Station Theme", "theme")));
                 soundType = "theme";
             } else {
                 soundType = "theme";
@@ -828,6 +806,51 @@ public class MediaPlayerService extends MediaLibraryService {
                 // Randomly pick one from variants
                 songQueue.add(Objects.requireNonNull(variants).get(random.nextInt(variants.size())));
             }
+        }
+
+        if (songQueue.isEmpty()) {
+            Log.e("Radio", "SongQueue STILL EMPTY after generation");
+            return;
+        }
+
+        currentSongFile = songQueue.remove(0);
+
+        if (currentSongFile == null) {
+            Log.e("Radio", "currentSongFile is NULL");
+            return;
+        }
+
+        if (currentSongFile.contains("_")) {
+            songName = currentSongFile.substring(currentSongFile.indexOf("_") + 1);
+        } else {
+            songName = currentSongFile;
+        }
+
+        // For matching intros/outros, strip sing-along suffixes
+        String matchName = songName;
+        if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
+            matchName = matchName.substring(0, matchName.length() - 5);
+        } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
+            matchName = matchName.substring(0, matchName.length() - 7);
+        }
+
+        introList.clear();
+        for (String intro : intros) {
+            if (intro.contains(matchName)) introList.add(intro);
+        }
+        for (String caller : callers) {
+            if (caller.contains(matchName)) introList.add(caller);
+        }
+        for (String intro : intros) {
+            if (intro.contains("_intro")) introList.add(intro);
+        }
+
+        outroList.clear();
+        for (String outro : outros) {
+            if (outro.contains(matchName)) outroList.add(outro);
+        }
+        for (String outro : outros) {
+            if (outro.contains("_outro")) outroList.add(outro);
         }
     }
 
