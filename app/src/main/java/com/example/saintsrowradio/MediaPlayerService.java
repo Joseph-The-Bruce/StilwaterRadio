@@ -692,6 +692,33 @@ public class MediaPlayerService extends MediaLibraryService {
         if (Objects.equals(soundType, "theme")) {
             if (songQueue.isEmpty()) {
                 generateSongQueue();
+            } else {
+                currentSongFile = songQueue.remove(0);
+
+                if (currentSongFile.contains("_")) {
+                    songName = currentSongFile.substring(currentSongFile.indexOf("_") + 1);
+                } else {
+                    songName = currentSongFile;
+                }
+
+                // For matching intros/outros, strip sing-along suffixes
+                String matchName = songName;
+                if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
+                    matchName = matchName.substring(0, matchName.length() - 5);
+                } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
+                    matchName = matchName.substring(0, matchName.length() - 7);
+                }
+
+                introList.clear();
+                for (String intro : intros) {
+                    if (intro.contains(matchName)) introList.add(intro);
+                }
+                for (String caller : callers) {
+                    if (caller.contains(matchName)) introList.add(caller);
+                }
+                for (String intro : intros) {
+                    if (intro.contains("_intro")) introList.add(intro);
+                }
             }
 
             if (!introList.isEmpty()) {
@@ -714,6 +741,28 @@ public class MediaPlayerService extends MediaLibraryService {
         } else if (Objects.equals(soundType, "song")) {
             if (songQueue.isEmpty()) {
                 generateSongQueue();
+            } else {
+                if (currentSongFile.contains("_")) {
+                    songName = currentSongFile.substring(currentSongFile.indexOf("_") + 1);
+                } else {
+                    songName = currentSongFile;
+                }
+
+                // For matching intros/outros, strip sing-along suffixes
+                String matchName = songName;
+                if (matchName.endsWith("male1") || matchName.endsWith("male2") || matchName.endsWith("male3")) {
+                    matchName = matchName.substring(0, matchName.length() - 5);
+                } else if (matchName.endsWith("female1") || matchName.endsWith("female2") || matchName.endsWith("female3")) {
+                    matchName = matchName.substring(0, matchName.length() - 7);
+                }
+
+                outroList.clear();
+                for (String outro : outros) {
+                    if (outro.contains(matchName)) outroList.add(outro);
+                }
+                for (String outro : outros) {
+                    if (outro.contains("_outro")) outroList.add(outro);
+                }
             }
 
             if (!outroList.isEmpty()) {
@@ -824,8 +873,6 @@ public class MediaPlayerService extends MediaLibraryService {
             Log.e("Radio", "SongQueue STILL EMPTY after generation");
             return;
         }
-
-        currentSongFile = songQueue.remove(0);
 
         if (currentSongFile == null) {
             Log.e("Radio", "currentSongFile is NULL");

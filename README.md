@@ -17,6 +17,8 @@ The app features five radio stations:
 *   **Krhyme**: Hip-hop and rap.
 *   **Mix**: 80s pop and power ballads.
 *   **GenX**: Alternative rock and punk.
+*   **Ezzzy**: Easy Listening.
+*   **Undrgrnd**: Indie Rock.
 *   **Saints Radio**: A customizable mix curated by the user.
 
 ### 2. Rotation Logic
@@ -34,8 +36,9 @@ When enabled, there is a random chance that instead of the standard song, you wi
 
 ### The Main Screen
 *   **Selecting a Station**: Tap any of the station logos to tune in. If a station is already playing, tapping its logo will toggle between Play and Pause.
-*   **Navigation**: Use the **Skip Next** button to jump to the next segment in the rotation. Use the **Skip Back** button to restart the current track.
-*   **Menu Music**: When the app first opens, the  *Saints Row 2* pause menu music plays until you select your first station.
+*   **Navigation**: Use the **Skip Next** button to jump to the next segment in the rotation. Use the **Skip Back** button to restart the current track. Use the **Play/Pause** button to toggle playback.
+*   **Menu Music**: When the app first opens, the  *Saints Row 2* pause menu music plays until you select your first station, unless the **Disable Menu Music** setting is enabled.
+*   **Background**: Every time the app opens, a random *Saints Row 2* background image is chosen.
 
 ![Main Screen Landscape](./app/Screenshots/ui_landscape.png)
 
@@ -51,6 +54,7 @@ Tap the **Gear Icon** in the top-right corner to open the **Settings** dialog. T
 #### Global Toggles
 *   **Include Sing Alongs**: When checked, the app will randomly choose between standard and sing-along versions of songs.
 *   **Skip Splash Intro**: When checked, the THQ and Volition intro videos will be skipped on the next app launch.
+*   **Disable Menu Music**: When checked, the *Saints Row 2* pause menu music will not play.
 
 #### Saints Radio Customization
 Under the "Saints Radio Includes" section, you can use the checkboxes to select which stations contribute to the Saints Radio mix.
