@@ -874,6 +874,8 @@ public class MediaPlayerService extends MediaLibraryService {
             return;
         }
 
+        currentSongFile = songQueue.remove(0);
+
         if (currentSongFile == null) {
             Log.e("Radio", "currentSongFile is NULL");
             return;
