@@ -9,11 +9,13 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Station Stroke Colors -->
-    <color name="krunch_stroke">#F15A24</color>   <!-- Orange -->
+    <color name="krunch_stroke">#E11F26</color>   <!-- Red -->
     <color name="krhyme_stroke">#FDB813</color>  <!-- Gold -->
     <color name="mix_stroke">#F48FB1</color> <!-- Light Pink -->
     <color name="genx_stroke">#00A651</color> <!-- Green -->
     <color name="saints_stroke">#92278F</color>   <!-- Purple -->
     <color name="ezzzy_stroke">#00ADEF</color>    <!-- Blue -->
     <color name="underground_stroke">#E11F26</color> <!-- Red -->
+    <color name="ultor_stroke">#F15A24</color>    <!-- Orange -->
+    <color name="world_stroke">#00ADEF</color>    <!-- Blue -->
 </resources>

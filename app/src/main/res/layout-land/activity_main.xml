@@ -109,7 +109,24 @@
             app:layout_constraintTop_toTopOf="@+id/toggleButton1"
             tools:ignore="ContentDescription" />
 
-        <!-- Bottom Row: Mix, Saints, GenX -->
+        <!-- Bottom Row: Mix, Saints, GenX, Ultor, World -->
+        <ImageButton
+            android:id="@+id/toggleButton8"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/world_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/world_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton3"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton3"
+            app:layout_constraintHeight_percent="0.45"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggleButton1"
+            tools:ignore="ContentDescription" />
+
         <ImageButton
             android:id="@+id/toggleButton3"
             android:layout_width="0dp"
@@ -119,7 +136,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/mix_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton8"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton"
             app:layout_constraintHeight_percent="0.45"
@@ -159,6 +176,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.45"
             app:layout_constraintStart_toEndOf="@+id/toggleButton"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton3"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/toggleButton7"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/ultor_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ultor_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton3"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.45"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton4"
             app:layout_constraintTop_toTopOf="@+id/toggleButton3"
             tools:ignore="ContentDescription" />
 

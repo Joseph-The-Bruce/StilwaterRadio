@@ -84,6 +84,8 @@ public class MediaPlayerService extends MediaLibraryService {
     boolean includeGenx = true;
     boolean includeEzzzy = true;
     boolean includeUndrgrnd = true;
+    boolean includeUltor = true;
+    boolean includeWorld = true;
 
     private boolean ongoingCall = false;
     private CallStateCallback phoneStateListener;
@@ -271,6 +273,8 @@ public class MediaPlayerService extends MediaLibraryService {
                     items.add(createPlayableItem("genx", "GenX Radio", "genx_tile"));
                     items.add(createPlayableItem("ezzzy", "Ezzzy Radio", "ezzzy_tile"));
                     items.add(createPlayableItem("undrgrnd", "Undrgrnd Radio", "undrgrnd_tile"));
+                    items.add(createPlayableItem("ultor", "Ultor Radio", "ultor_tile"));
+                    items.add(createPlayableItem("world", "World Radio", "world_tile"));
                 }
                 return Futures.immediateFuture(LibraryResult.ofItemList(ImmutableList.copyOf(items), params));
             }
@@ -312,6 +316,8 @@ public class MediaPlayerService extends MediaLibraryService {
                         includeGenx = args.getBoolean("includeGenx", includeGenx);
                         includeEzzzy = args.getBoolean("includeEzzzy", includeEzzzy);
                         includeUndrgrnd = args.getBoolean("includeUndrgrnd", includeUndrgrnd);
+                        includeUltor = args.getBoolean("includeUltor", includeUltor);
+                        includeWorld = args.getBoolean("includeWorld", includeWorld);
 
                         // If menu music was just disabled and is currently playing, stop it.
                         if (disableMenuMusic && !oldDisableMenuMusic && currentStationId.isEmpty()) {
@@ -343,6 +349,8 @@ public class MediaPlayerService extends MediaLibraryService {
             register_startGenxRadio();
             register_startEzzzyRadio();
             register_startUndrgrndRadio();
+            register_startUltorRadio();
+            register_startWorldRadio();
         }
 
         player.addListener(new Player.Listener() {
@@ -400,7 +408,7 @@ public class MediaPlayerService extends MediaLibraryService {
         title = title.replace("intro", "").replace("outro", "").replace("caller", "");
         
         // Special case formatting
-        // Genx
+        // Genx & Ultor
         if (title.equalsIgnoreCase("allthativegot")) title = "All That I've Got";
         else if (title.equalsIgnoreCase("coatofarms")) title = "Coat Of Arms";
         else if (title.equalsIgnoreCase("facedown")) title = "Face Down";
@@ -495,6 +503,28 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("terror")) title = "Terror";
         else if (title.equalsIgnoreCase("thirdgearscratch")) title = "Third Gear Scratch";
         else if (title.equalsIgnoreCase("westernbiographic")) title = "Western Biographic";
+        // World
+        else if (title.equalsIgnoreCase("overthemoortomaggie")) title = "Over The Moor To Maggie";
+        else if (title.equalsIgnoreCase("elvientoenlaisla")) title = "El Viento En La Isla";
+        else if (title.equalsIgnoreCase("bangaradance")) title = "Bangara Dance";
+        else if (title.equalsIgnoreCase("zahratelsahra")) title = "Zahrat El Sahra";
+        else if (title.equalsIgnoreCase("thedrunkardssong")) title = "The Drunkard's Song";
+        else if (title.equalsIgnoreCase("schenktsmamalwasboarisch")) title = "Schenkt's Ma Mal Was Boarisch";
+        else if (title.equalsIgnoreCase("mountainhutlandler")) title = "Mountain Hut Landler";
+        else if (title.equalsIgnoreCase("mandilatos")) title = "Mandilatos";
+        else if (title.equalsIgnoreCase("mambodefito")) title = "Mambo De Fito";
+        else if (title.equalsIgnoreCase("hungariansundance")) title = "Hungarian Sundance";
+        else if (title.equalsIgnoreCase("humoursofglendart")) title = "Humours Of Glen Dart";
+        else if (title.equalsIgnoreCase("hotnights")) title = "Hot Nights";
+        else if (title.equalsIgnoreCase("gypsydance")) title = "Gypsy Dance";
+        else if (title.equalsIgnoreCase("goodmorningpolka")) title = "Good Morning Polka";
+        else if (title.equalsIgnoreCase("frissarozsa")) title = "Friss A Rozsa";
+        else if (title.equalsIgnoreCase("emeraldjig")) title = "Emerald Jig";
+        else if (title.equalsIgnoreCase("drumjig")) title = "Drumjig";
+        else if (title.equalsIgnoreCase("connaughtchase")) title = "Connaught Chase";
+        else if (title.equalsIgnoreCase("cigany")) title = "Cigany";
+        else if (title.equalsIgnoreCase("barasilianfiesta")) title = "Barasilian Fiesta";
+        else if (title.equalsIgnoreCase("baidoushka")) title = "Baidoushka";
         else if (!title.isEmpty()) {
             title = title.substring(0, 1).toUpperCase() + title.substring(1);
         }
@@ -532,6 +562,8 @@ public class MediaPlayerService extends MediaLibraryService {
             case "genx": currentStationName = "GenX Radio"; break;
             case "ezzzy": currentStationName = "Ezzzy Radio"; break;
             case "undrgrnd": currentStationName = "Undrgrnd Radio"; break;
+            case "ultor": currentStationName = "Ultor Radio"; break;
+            case "world": currentStationName = "World Radio"; break;
         }
         
         player.stop();
@@ -605,6 +637,8 @@ public class MediaPlayerService extends MediaLibraryService {
         unregisterReceiver(startGenxRadio);
         unregisterReceiver(startEzzzyRadio);
         unregisterReceiver(startUndrgrndRadio);
+        unregisterReceiver(startUltorRadio);
+        unregisterReceiver(startWorldRadio);
     }
 
     private void loadMedia(String radio) {
@@ -634,6 +668,8 @@ public class MediaPlayerService extends MediaLibraryService {
                 else if (name.startsWith("genx_") && includeGenx) categorizeFile(name);
                 else if (name.startsWith("ezzzy_") && includeEzzzy) categorizeFile(name);
                 else if (name.startsWith("undrgrnd_") && includeUndrgrnd) categorizeFile(name);
+                else if (name.startsWith("ultor_") && includeUltor) categorizeFile(name);
+                else if (name.startsWith("world_") && includeWorld) categorizeFile(name);
             } else if (name.startsWith(radio.toLowerCase() + "_")) {
                 categorizeFile(name);
             }
@@ -1004,5 +1040,31 @@ public class MediaPlayerService extends MediaLibraryService {
     private void register_startUndrgrndRadio() {
         IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_UNDRGRND_RADIO);
         registerReceiver(startUndrgrndRadio, filter, RECEIVER_EXPORTED);
+    }
+
+    private final BroadcastReceiver startUltorRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("ultor");
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void register_startUltorRadio() {
+        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_ULTOR_RADIO);
+        registerReceiver(startUltorRadio, filter, RECEIVER_EXPORTED);
+    }
+
+    private final BroadcastReceiver startWorldRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("world");
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void register_startWorldRadio() {
+        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_WORLD_RADIO);
+        registerReceiver(startWorldRadio, filter, RECEIVER_EXPORTED);
     }
 }

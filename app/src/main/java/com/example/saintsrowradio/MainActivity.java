@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean includeGenx = true;
     private boolean includeEzzzy = true;
     private boolean includeUndrgrnd = true;
+    private boolean includeUltor = true;
+    private boolean includeWorld = true;
 
     public static final String PREFS_NAME = "SaintsRadioPrefs";
     private static final String KEY_COMMERCIALS = "commercialsPerSong";
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INCLUDE_GENX = "includeGenx";
     private static final String KEY_INCLUDE_EZZZY = "includeEzzzy";
     private static final String KEY_INCLUDE_UNDRGRND = "includeUndrgrnd";
+    private static final String KEY_INCLUDE_ULTOR = "includeUltor";
+    private static final String KEY_INCLUDE_WORLD = "includeWorld";
 
     public static final String Broadcast_START_SAINTS_RADIO = "com.example.saintsrowradio.StartSaintsRadio";
     public static final String Broadcast_START_KRUNCH_RADIO = "com.example.saintsrowradio.StartKrunchRadio";
@@ -89,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_START_GENX_RADIO = "com.example.saintsrowradio.StartGenxRadio";
     public static final String Broadcast_START_EZZZY_RADIO = "com.example.saintsrowradio.StartEzzzyRadio";
     public static final String Broadcast_START_UNDRGRND_RADIO = "com.example.saintsrowradio.StartUndrgrndRadio";
+    public static final String Broadcast_START_ULTOR_RADIO = "com.example.saintsrowradio.StartUltorRadio";
+    public static final String Broadcast_START_WORLD_RADIO = "com.example.saintsrowradio.StartWorldRadio";
 
     private final int[] backgrounds = {
             R.drawable.saintsrow2,
@@ -234,6 +240,8 @@ public class MainActivity extends AppCompatActivity {
         includeGenx = prefs.getBoolean(KEY_INCLUDE_GENX, true);
         includeEzzzy = prefs.getBoolean(KEY_INCLUDE_EZZZY, true);
         includeUndrgrnd = prefs.getBoolean(KEY_INCLUDE_UNDRGRND, true);
+        includeUltor = prefs.getBoolean(KEY_INCLUDE_ULTOR, true);
+        includeWorld = prefs.getBoolean(KEY_INCLUDE_WORLD, true);
     }
 
     private void saveSettings() {
@@ -251,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_INCLUDE_GENX, includeGenx);
         editor.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
         editor.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
+        editor.putBoolean(KEY_INCLUDE_ULTOR, includeUltor);
+        editor.putBoolean(KEY_INCLUDE_WORLD, includeWorld);
         
         editor.apply();
     }
@@ -269,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
             args.putBoolean(KEY_INCLUDE_GENX, includeGenx);
             args.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
             args.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
+            args.putBoolean(KEY_INCLUDE_ULTOR, includeUltor);
+            args.putBoolean(KEY_INCLUDE_WORLD, includeWorld);
             
             mediaController.sendCustomCommand(new SessionCommand("ACTION_UPDATE_SETTINGS", Bundle.EMPTY), args);
         }
@@ -361,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(saintsLabel);
         
         GridLayout gridLayout = new GridLayout(this);
-        gridLayout.setColumnCount(2);
+        gridLayout.setColumnCount(3);
         gridLayout.setPadding(0, 10, 0, 0);
         
         final CheckBox krunchCheck = createStationCheckbox(getString(R.string.station_krunch), includeKrunch, checkboxTint);
@@ -370,6 +382,8 @@ public class MainActivity extends AppCompatActivity {
         final CheckBox genxCheck = createStationCheckbox(getString(R.string.station_genx), includeGenx, checkboxTint);
         final CheckBox ezzzyCheck = createStationCheckbox(getString(R.string.station_ezzzy), includeEzzzy, checkboxTint);
         final CheckBox undrgrndCheck = createStationCheckbox(getString(R.string.station_undrgrnd), includeUndrgrnd, checkboxTint);
+        final CheckBox ultorCheck = createStationCheckbox(getString(R.string.station_ultor), includeUltor, checkboxTint);
+        final CheckBox worldCheck = createStationCheckbox(getString(R.string.station_world), includeWorld, checkboxTint);
         
         gridLayout.addView(krunchCheck);
         gridLayout.addView(krhymeCheck);
@@ -377,6 +391,8 @@ public class MainActivity extends AppCompatActivity {
         gridLayout.addView(genxCheck);
         gridLayout.addView(ezzzyCheck);
         gridLayout.addView(undrgrndCheck);
+        gridLayout.addView(ultorCheck);
+        gridLayout.addView(worldCheck);
         
         layout.addView(gridLayout);
 
@@ -391,6 +407,8 @@ public class MainActivity extends AppCompatActivity {
             if (genxCheck.isChecked()) count++;
             if (ezzzyCheck.isChecked()) count++;
             if (undrgrndCheck.isChecked()) count++;
+            if (ultorCheck.isChecked()) count++;
+            if (worldCheck.isChecked()) count++;
             
             if (count < 2) {
                 Toast.makeText(this, "Please select at least 2 stations for Saints Radio", Toast.LENGTH_LONG).show();
@@ -410,6 +428,8 @@ public class MainActivity extends AppCompatActivity {
             includeGenx = genxCheck.isChecked();
             includeEzzzy = ezzzyCheck.isChecked();
             includeUndrgrnd = undrgrndCheck.isChecked();
+            includeUltor = ultorCheck.isChecked();
+            includeWorld = worldCheck.isChecked();
             
             saveSettings();
             updateServiceSettings();
@@ -523,5 +543,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggleButton4).setOnClickListener(v -> handleStationClick("genx", Broadcast_START_GENX_RADIO));
         findViewById(R.id.toggleButton5).setOnClickListener(v -> handleStationClick("ezzzy", Broadcast_START_EZZZY_RADIO));
         findViewById(R.id.toggleButton6).setOnClickListener(v -> handleStationClick("undrgrnd", Broadcast_START_UNDRGRND_RADIO));
+        findViewById(R.id.toggleButton7).setOnClickListener(v -> handleStationClick("ultor", Broadcast_START_ULTOR_RADIO));
+        findViewById(R.id.toggleButton8).setOnClickListener(v -> handleStationClick("world", Broadcast_START_WORLD_RADIO));
     }
 }
