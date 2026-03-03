@@ -12,17 +12,19 @@
 ## Key Features
 
 ### 1. Authentic Station Experience
-The app features five radio stations:
-*   **Krunch**: Hard rock and heavy metal.
+The app features nine radio stations:
+*   **Krunch**: Hard rock.
 *   **Krhyme**: Hip-hop and rap.
-*   **Mix**: 80s pop and power ballads.
-*   **GenX**: Alternative rock and punk.
-*   **Ezzzy**: Easy Listening.
-*   **Undrgrnd**: Indie Rock.
+*   **Mix**: 80s pop and rock.
+*   **GenX**: Modern rock.
+*   **Ezzzy**: Easy listening.
+*   **Undrgrnd**: Indie rock.
+*   **Ultor**: Modern rock.
+*   **World**: Eclectic world music.
 *   **Saints Radio**: A customizable mix curated by the user.
 
 ### 2. Rotation Logic
-The app uses a randomized rotation logic to ensure the playback engine mimics the Saints Row 2 radio stations:
+The app uses a randomized rotation logic to mimic the Saints Row 2 radio stations:
 *   **Themes & Intros**: Every station start and song transition is accompanied by station tags and DJ commentary.
 *   **Shuffle Queue**: The app generates a randomized queue of every song on a station. It plays through the entire library once before reshuffling, ensuring you don't hear the same track twice in a row.
 *   **Commercials & News**: Based on your settings, the app automatically inserts commercial breaks and Stilwater news updates between songs.
@@ -68,7 +70,7 @@ Under the "Saints Radio Includes" section, you can use the checkboxes to select 
 All user preferences (slider values, station inclusions, and intro settings) are saved. Your custom radio configuration will remain exactly as you left it every time you return to the app.
 
 ### Orientation Support
-The app is fully optimized for both **Portrait** and **Landscape** modes. The station cluster and controls dynamically adjust their layout to fill the screen.
+The app supports both **Portrait** and **Landscape** modes. The station cluster and controls dynamically adjust their layout to fill the screen.
 
 ### Android Auto
 Stilwater Radio is built to be compatible with **Android Auto**. You can browse stations, see album art (station tiles), and control playback directly from your vehicle's head unit.
