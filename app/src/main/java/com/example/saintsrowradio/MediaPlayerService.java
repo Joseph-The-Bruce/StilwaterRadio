@@ -393,7 +393,7 @@ public class MediaPlayerService extends MediaLibraryService {
         if (title.contains("_")) {
             title = title.substring(title.indexOf("_") + 1);
         }
-        
+
         // Remove suffixes first to avoid matching special cases incorrectly
         String suffix = "";
         if (title.endsWith("male1") || title.endsWith("male2") || title.endsWith("male3")) {
@@ -403,7 +403,7 @@ public class MediaPlayerService extends MediaLibraryService {
             suffix = " (Female Sing Along)";
             title = title.substring(0, title.length() - 7);
         }
-        
+
         // General replacements
         title = title.replace("intro", "").replace("outro", "").replace("caller", "");
         
@@ -428,13 +428,15 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("iluvit")) title = "I Luv It";
         else if (title.equalsIgnoreCase("meandu")) title = "Me & U";
         else if (title.equalsIgnoreCase("nystateofmind")) title = "N.Y. State Of Mind";
-        else if (title.equalsIgnoreCase("onething")) title = "One Thing";
+        else if (title.equalsIgnoreCase("onething")) title = "1 Thing";
         else if (title.equalsIgnoreCase("ridininthatblackjoint")) title = "Ridin' In That Black Joint";
         else if (title.equalsIgnoreCase("sosick")) title = "So Sick";
         else if (title.equalsIgnoreCase("suckermcs")) title = "Sucker M.C.'s";
         else if (title.equalsIgnoreCase("tellmeboutit")) title = "Tell Me 'Bout It";
         else if (title.equalsIgnoreCase("trickme")) title = "Trick Me";
         else if (title.equalsIgnoreCase("whatathugabout")) title = "What A Thug About";
+        else if (title.equalsIgnoreCase("fandango")) title = "Fandango";
+        else if (title.equalsIgnoreCase("twinz")) title = "Twinz";
         // Krunch
         else if (title.equalsIgnoreCase("barnburner")) title = "Barn Burner";
         else if (title.equalsIgnoreCase("batcountry")) title = "Bat Country";
@@ -532,6 +534,156 @@ public class MediaPlayerService extends MediaLibraryService {
         return title + suffix;
     }
 
+    private String formatArtistName(String rawName) {
+        if (rawName == null) return currentStationName;
+
+        String title = getSongTitle(rawName);
+
+        // Krunch
+        if (title.equalsIgnoreCase("barnburner")) return "The Agony Scene";
+        else if (title.equalsIgnoreCase("batcountry")) return "Avenged Sevenfold";
+        else if (title.equalsIgnoreCase("colonyofbirchmen")) return "Mastodon";
+        else if (title.equalsIgnoreCase("deadlysinners")) return "3 Inches Of Blood";
+        else if (title.equalsIgnoreCase("ghostofperdition")) return "Opeth";
+        else if (title.equalsIgnoreCase("milklizard")) return "The Dillinger Escape Plan";
+        else if (title.equalsIgnoreCase("nothingleft")) return "As I Lay Dying";
+        else if (title.equalsIgnoreCase("whatahorriblenighttohaveacurse")) return "The Black Dahlia Murder";
+        else if (title.equalsIgnoreCase("anthem")) return "Trivia";
+        else if (title.equalsIgnoreCase("resurrection")) return "Chimaira";
+        else if (title.equalsIgnoreCase("stars")) return "Hum";
+        else if (title.equalsIgnoreCase("unsung")) return "Helmet";
+        else if (title.equalsIgnoreCase("woman")) return "Wolfmother";
+        else if (title.equalsIgnoreCase("redneck")) return "Lamb Of God";
+        // Krhyme
+        else if (title.equalsIgnoreCase("gangstabitch")) return "Apache";
+        else if (title.equalsIgnoreCase("goodgirl")) return "Chrisette Michele";
+        else if (title.equalsIgnoreCase("handsup")) return "Lloyd Banks Ft. 50 Cent";
+        else if (title.equalsIgnoreCase("iluvit")) return "Young Jeezy";
+        else if (title.equalsIgnoreCase("meandu")) return "Cassie";
+        else if (title.equalsIgnoreCase("nystateofmind")) return "Nas";
+        else if (title.equalsIgnoreCase("onething")) return "Amerie";
+        else if (title.equalsIgnoreCase("ridininthatblackjoint")) return "Wale";
+        else if (title.equalsIgnoreCase("sosick")) return "Ne-Yo";
+        else if (title.equalsIgnoreCase("suckermcs")) return "Run-D.M.C.";
+        else if (title.equalsIgnoreCase("tellmeboutit")) return "Joss Stone";
+        else if (title.equalsIgnoreCase("trickme")) return "Kelis";
+        else if (title.equalsIgnoreCase("whatathugabout")) return "Beanie Sigel";
+        else if (title.equalsIgnoreCase("fandango")) return "DJ Quik Ft. B-Real";
+        else if (title.equalsIgnoreCase("twinz")) return "Big Pun Ft. Fat Joe";
+        // GenX / Ultor
+        else if (title.equalsIgnoreCase("allthativegot")) return "The Used";
+        else if (title.equalsIgnoreCase("coatofarms")) return "The Life And Times";
+        else if (title.equalsIgnoreCase("facedown")) return "The Red Jumpsuit Apparatus";
+        else if (title.equalsIgnoreCase("holeintheearth")) return "Deftones";
+        else if (title.equalsIgnoreCase("letmein")) return "Hot Hot Heat";
+        else if (title.equalsIgnoreCase("lyingisthemostfunagirlcanhavewithouttakingherclothesoff")) return "Panic! At The Disco";
+        else if (title.equalsIgnoreCase("makedamnsure")) return "Taking Back Sunday";
+        else if (title.equalsIgnoreCase("miserybusiness")) return "Paramore";
+        else if (title.equalsIgnoreCase("rockandrollqueen")) return "The Subways";
+        else if (title.equalsIgnoreCase("teenagers")) return "My Chemical Romance";
+        else if (title.equalsIgnoreCase("whatyouneed")) return "Galactic Ft. Lyrics Born";
+        else if (title.equalsIgnoreCase("putyourmoneywhereyourmouthis")) return "Jet";
+        else if (title.equalsIgnoreCase("knights")) return "Minus The Bear";
+        else if (title.equalsIgnoreCase("hate")) return "Plain White T's";
+        // Mix
+        else if (title.equalsIgnoreCase("dontyou")) return "Simple Minds";
+        else if (title.equalsIgnoreCase("takeonme")) return "A-ha";
+        else if (title.equalsIgnoreCase("downunder")) return "Men At Work";
+        else if (title.equalsIgnoreCase("outoftouch")) return "Hall & Oates";
+        else if (title.equalsIgnoreCase("thereflex")) return "Duran Duran";
+        else if (title.equalsIgnoreCase("safetydance")) return "Men Without Hats";
+        else if (title.equalsIgnoreCase("prettyinpink")) return "The Psychedelic Furs";
+        else if (title.equalsIgnoreCase("workingfortheweekend")) return "Loverboy";
+        else if (title.equalsIgnoreCase("everybodywantstoruletheworld")) return "Tears For Fears";
+        else if (title.equalsIgnoreCase("sisterchristian")) return "Night Ranger";
+        else if (title.equalsIgnoreCase("karmachameleon")) return "Culture Club";
+        else if (title.equalsIgnoreCase("thefinalcountdown")) return "Europe";
+        // Ezzzy
+        else if (title.equalsIgnoreCase("acielitolindo")) return "Carlos Periguez";
+        else if (title.equalsIgnoreCase("agirllikeyou")) return "Norman Candler";
+        else if (title.equalsIgnoreCase("asunnydayinheidelberg")) return "Horst Jankowski";
+        else if (title.equalsIgnoreCase("bachelorsamba")) return "Marc Durst";
+        else if (title.equalsIgnoreCase("bergundtal")) return "Gerhard Narholz";
+        else if (title.equalsIgnoreCase("bossacubana")) return "Gerhard Narholz";
+        else if (title.equalsIgnoreCase("chansonpourtoi")) return "Alfred Jack";
+        else if (title.equalsIgnoreCase("coconuts")) return "Gerhard Narholz";
+        else if (title.equalsIgnoreCase("colonieceleste")) return "Jean-Jacques Perrey";
+        else if (title.equalsIgnoreCase("dancingontheavenue")) return "John Cacavas";
+        else if (title.equalsIgnoreCase("dolcevita")) return "Bruno Bertoli";
+        else if (title.equalsIgnoreCase("facetoface")) return "Sammy Burdson";
+        else if (title.equalsIgnoreCase("jarabetapatio")) return "Carlos Periguez";
+        else if (title.equalsIgnoreCase("juststrollingalong")) return "Sammy Burdson & John Charles Fiddy";
+        else if (title.equalsIgnoreCase("kalamazoostyle")) return "Olivier Andres & Christian Seguret";
+        else if (title.equalsIgnoreCase("loveforlife")) return "Sammy Burdson & John Charles Fiddy";
+        else if (title.equalsIgnoreCase("marvelloussingersremix")) return "Laurent Lombard & Marc Durst";
+        else if (title.equalsIgnoreCase("naughtybutnice")) return "Walt Rockman";
+        else if (title.equalsIgnoreCase("stereochacha")) return "Umberto Pagnini";
+        else if (title.equalsIgnoreCase("swingpaname")) return "Angelo Debarre";
+        else if (title.equalsIgnoreCase("tchoupatwist")) return "Nicolas Folmer";
+        else if (title.equalsIgnoreCase("toobaboogie")) return "Otto Sieben";
+        else if (title.equalsIgnoreCase("walkietalkie")) return "Gerhard Narholz";
+        else if (title.equalsIgnoreCase("whistlehappy")) return "Colin Baldry & Tom Kane";
+        // Undrgrnd
+        else if (title.equalsIgnoreCase("andshewoulddarkenthememory")) return "The Twilight Sad";
+        else if (title.equalsIgnoreCase("callinthedebts")) return "South Street";
+        else if (title.equalsIgnoreCase("cheeriton")) return "Tokyo Police Club";
+        else if (title.equalsIgnoreCase("deadfriends")) return "The Saps";
+        else if (title.equalsIgnoreCase("dontcallitaghetto")) return "Architects";
+        else if (title.equalsIgnoreCase("everysinglelinemeanssomething")) return "Marnie Stern";
+        else if (title.equalsIgnoreCase("forreal")) return "Okkervil River";
+        else if (title.equalsIgnoreCase("hazelst")) return "Deerhunter";
+        else if (title.equalsIgnoreCase("hearsyourfuture")) return "The Thermals";
+        else if (title.equalsIgnoreCase("houseofcards")) return "Shipwreck";
+        else if (title.equalsIgnoreCase("shoottherunner")) return "Kasabian";
+        else if (title.equalsIgnoreCase("terror")) return "The Rakes";
+        else if (title.equalsIgnoreCase("thirdgearscratch")) return "Shiner";
+        else if (title.equalsIgnoreCase("westernbiographic")) return "Bound Stems";
+        // World
+        else if (title.equalsIgnoreCase("overthemoortomaggie")) return "Greg Knowles & Mike Taylor";
+        else if (title.equalsIgnoreCase("elvientoenlaisla")) return "Liza Carbe & Jean Pierre Durand";
+        else if (title.equalsIgnoreCase("bangaradance")) return "Ravi Shani";
+        else if (title.equalsIgnoreCase("zahratelsahra")) return "Roger Abaji";
+        else if (title.equalsIgnoreCase("thedrunkardssong")) return "Viktor Mastoridis";
+        else if (title.equalsIgnoreCase("schenktsmamalwasboarisch")) return "Karl Barthel";
+        else if (title.equalsIgnoreCase("mountainhutlandler")) return "Martin Beeler";
+        else if (title.equalsIgnoreCase("mandilatos")) return "Robin Jeffrey";
+        else if (title.equalsIgnoreCase("mambodefito")) return "Liza Carbe & Jean Pierre Durand";
+        else if (title.equalsIgnoreCase("hungariansundance")) return "Friedrich Sehl";
+        else if (title.equalsIgnoreCase("humoursofglendart")) return "Greg Knowles & Mike Taylor";
+        else if (title.equalsIgnoreCase("hotnights")) return "John Leach";
+        else if (title.equalsIgnoreCase("gypsydance")) return "Laszlo Borteri";
+        else if (title.equalsIgnoreCase("goodmorningpolka")) return "Jan Schneeberg";
+        else if (title.equalsIgnoreCase("frissarozsa")) return "Niko Radic";
+        else if (title.equalsIgnoreCase("emeraldjig")) return "Ian Clarke & Simon Painter";
+        else if (title.equalsIgnoreCase("drumjig")) return "Greg Knowles & Mike Taylor";
+        else if (title.equalsIgnoreCase("connaughtchase")) return "Greg Knowles & Mike Taylor";
+        else if (title.equalsIgnoreCase("cigany")) return "Niko Radic";
+        else if (title.equalsIgnoreCase("barasilianfiesta")) return "Claudia Figueroa, Forbes Henderson, Tony Hinnigan, & Martin Taylor";
+        else if (title.equalsIgnoreCase("baidoushka")) return "Robin Jeffrey";
+
+        // Fallback to station name for non-songs (commercials/news)
+        return currentStationName;
+    }
+
+    @NonNull
+    private static String getSongTitle(String rawName) {
+        String title = rawName;
+        if (title.contains("_")) {
+            title = title.substring(title.indexOf("_") + 1);
+        }
+
+        // Remove suffixes first to avoid matching special cases incorrectly
+        if (title.endsWith("male1") || title.endsWith("male2") || title.endsWith("male3")) {
+            title = title.substring(0, title.length() - 5);
+        } else if (title.endsWith("female1") || title.endsWith("female2") || title.endsWith("female3")) {
+            title = title.substring(0, title.length() - 7);
+        }
+
+        // General replacements
+        title = title.replace("intro", "").replace("outro", "").replace("caller", "");
+        return title;
+    }
+
     private MediaItem createPlayableItem(String id, String title, String iconName) {
         return new MediaItem.Builder()
                 .setMediaId(id)
@@ -600,8 +752,11 @@ public class MediaPlayerService extends MediaLibraryService {
         String iconName = currentStationId + "_logo";
         
         String displayTitle = itemTitle;
+        String displayArtist = currentStationName; // Default
+
         if (type != null && type.equals("song")) {
             displayTitle = formatSongTitle(rawName);
+            displayArtist = formatArtistName(rawName);
         }
 
         return new MediaItem.Builder()
@@ -609,7 +764,7 @@ public class MediaPlayerService extends MediaLibraryService {
                 .setUri("rawresource:///" + resId)
                 .setMediaMetadata(new MediaMetadata.Builder()
                         .setTitle(displayTitle)
-                        .setArtist(currentStationName)
+                        .setArtist(displayArtist)
                         .setArtworkUri(getUriForDrawable(iconName))
                         .build())
                 .build();
