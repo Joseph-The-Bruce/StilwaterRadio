@@ -28,12 +28,14 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionCommand;
@@ -130,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            initializeMediaController();
+        }
     }
 
     private void initializeMediaController() {
@@ -144,14 +149,43 @@ public class MainActivity extends AppCompatActivity {
                         public void onIsPlayingChanged(boolean isPlaying) {
                             updatePlayPauseButton(isPlaying);
                         }
+
+                        @Override
+                        public void onPlaybackStateChanged(int playbackState) {
+                            updatePlayPauseButton(mediaController.isPlaying());
+                        }
+
+                        @Override
+                        public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
+                            syncActiveStation(mediaItem);
+                        }
                     });
                     // Sync settings to service immediately after connection
                     updateServiceSettings();
+                    syncActiveStation(mediaController.getCurrentMediaItem());
                     updatePlayPauseButton(mediaController.isPlaying());
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "MediaController connection failed", e);
                 }
             }, MoreExecutors.directExecutor());
+        }
+    }
+
+    private void syncActiveStation(MediaItem item) {
+        if (item != null) {
+            if (item.mediaMetadata.extras != null && item.mediaMetadata.extras.containsKey("stationId")) {
+                activeStationId = item.mediaMetadata.extras.getString("stationId");
+                return;
+            }
+
+            String id = item.mediaId;
+            if (id.contains("_")) {
+                activeStationId = id.substring(0, id.indexOf("_"));
+            } else if (id.equals("shared_pausemenu")) {
+                activeStationId = "";
+            } else {
+                activeStationId = id;
+            }
         }
     }
 
@@ -533,9 +567,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            initializeMediaController();
-        } else {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE);
         }
 

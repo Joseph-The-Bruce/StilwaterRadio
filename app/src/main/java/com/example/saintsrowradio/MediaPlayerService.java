@@ -217,12 +217,17 @@ public class MediaPlayerService extends MediaLibraryService {
             public MediaSession.ConnectionResult onConnect(@NonNull MediaSession session, @NonNull MediaSession.ControllerInfo controller) {
                 MediaSession.ConnectionResult result = MediaLibrarySession.Callback.super.onConnect(session, controller);
                 
-                // Explicitly allow commands
+                // Explicitly allow all common player commands
                 Player.Commands playerCommands = result.availablePlayerCommands.buildUpon()
+                        .add(Player.COMMAND_PLAY_PAUSE)
+                        .add(Player.COMMAND_PREPARE)
+                        .add(Player.COMMAND_STOP)
                         .add(Player.COMMAND_SEEK_TO_NEXT)
                         .add(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
                         .add(Player.COMMAND_SEEK_TO_PREVIOUS)
                         .add(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                        .add(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)
+                        .add(Player.COMMAND_GET_METADATA)
                         .build();
 
                 SessionCommands sessionCommands = result.availableSessionCommands.buildUpon()
@@ -904,6 +909,9 @@ public class MediaPlayerService extends MediaLibraryService {
             displayArtist = formatArtistName(rawName);
         }
 
+        Bundle extras = new Bundle();
+        extras.putString("stationId", currentStationId);
+
         return new MediaItem.Builder()
                 .setMediaId(rawName)
                 .setUri("rawresource:///" + resId)
@@ -911,6 +919,7 @@ public class MediaPlayerService extends MediaLibraryService {
                         .setTitle(displayTitle)
                         .setArtist(displayArtist)
                         .setArtworkUri(getUriForDrawable(iconName))
+                        .setExtras(extras)
                         .build())
                 .build();
     }
