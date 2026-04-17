@@ -171,22 +171,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateStationButtonStates() {
+        int[] buttonIds = {
+                R.id.toggleButton, R.id.toggleButton1, R.id.toggleButton2, R.id.toggleButton3,
+                R.id.toggleButton4, R.id.toggleButton5, R.id.toggleButton6, R.id.toggleButton7,
+                R.id.toggleButton8, R.id.toggleButton9, R.id.toggleButton10, R.id.toggleButton11,
+                R.id.toggleButton12
+        };
+        String[] stationIds = {
+                "saints", "krunch", "krhyme", "mix", "genx", "ezzzy", "undrgrnd", "ultor", "world", "four20", "funk", "k12", "klassic"
+        };
+
+        boolean nothingActive = activeStationId == null || activeStationId.isEmpty();
+
+        for (int i = 0; i < buttonIds.length; i++) {
+            View v = findViewById(buttonIds[i]);
+            if (v != null) {
+                // If nothing is active, keep everything at full brightness.
+                // If a station is active, highlight only the active one.
+                if (nothingActive || activeStationId.equals(stationIds[i])) {
+                    v.setAlpha(1.0f);
+                } else {
+                    v.setAlpha(0.5f); // Dim the inactive stations
+                }
+            }
+        }
+    }
+
     private void syncActiveStation(MediaItem item) {
         if (item != null) {
+            // Priority 1: Use the explicit stationId extra if available
             if (item.mediaMetadata.extras != null && item.mediaMetadata.extras.containsKey("stationId")) {
                 activeStationId = item.mediaMetadata.extras.getString("stationId");
+                updateStationButtonStates();
                 return;
             }
 
+            // Priority 2: Handle special media IDs like the pause menu
             String id = item.mediaId;
-            if (id.contains("_")) {
-                activeStationId = id.substring(0, id.indexOf("_"));
-            } else if (id.equals("shared_pausemenu")) {
+            if (id.equals("shared_pausemenu") || id.startsWith("shared_")) {
                 activeStationId = "";
+            } else if (id.contains("_")) {
+                // Priority 3: Infer station from ID prefix (e.g., "krunch_song" -> "krunch")
+                activeStationId = id.substring(0, id.indexOf("_"));
             } else {
                 activeStationId = id;
             }
         }
+        updateStationButtonStates();
     }
 
     private void applyBackground() {
@@ -543,6 +575,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaController.play();
             } else {
                 activeStationId = stationId;
+                updateStationButtonStates();
                 sendBroadcast(new Intent(broadcastAction));
             }
         }
@@ -561,6 +594,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         applyBackground();
+        updateStationButtonStates();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
