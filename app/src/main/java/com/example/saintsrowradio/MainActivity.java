@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean includeUndrgrnd = true;
     private boolean includeUltor = true;
     private boolean includeWorld = true;
+    private boolean includeFour20 = true;
+    private boolean includeFunk = true;
+    private boolean includeK12 = true;
+    private boolean includeKlassic = true;
 
     public static final String PREFS_NAME = "SaintsRadioPrefs";
     private static final String KEY_COMMERCIALS = "commercialsPerSong";
@@ -85,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INCLUDE_UNDRGRND = "includeUndrgrnd";
     private static final String KEY_INCLUDE_ULTOR = "includeUltor";
     private static final String KEY_INCLUDE_WORLD = "includeWorld";
+    private static final String KEY_INCLUDE_FOUR20 = "includeFour20";
+    private static final String KEY_INCLUDE_FUNK = "includeFunk";
+    private static final String KEY_INCLUDE_K12 = "includeK12";
+    private static final String KEY_INCLUDE_KLASSIC = "includeKlassic";
+
 
     public static final String Broadcast_START_SAINTS_RADIO = "com.example.saintsrowradio.StartSaintsRadio";
     public static final String Broadcast_START_KRUNCH_RADIO = "com.example.saintsrowradio.StartKrunchRadio";
@@ -95,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_START_UNDRGRND_RADIO = "com.example.saintsrowradio.StartUndrgrndRadio";
     public static final String Broadcast_START_ULTOR_RADIO = "com.example.saintsrowradio.StartUltorRadio";
     public static final String Broadcast_START_WORLD_RADIO = "com.example.saintsrowradio.StartWorldRadio";
+    public static final String Broadcast_START_FOUR20_RADIO = "com.example.saintsrowradio.StartFour20Radio";
+    public static final String Broadcast_START_FUNK_RADIO = "com.example.saintsrowradio.StartFunkRadio";
+    public static final String Broadcast_START_K12_RADIO = "com.example.saintsrowradio.StartK12Radio";
+    public static final String Broadcast_START_KLASSIC_RADIO = "com.example.saintsrowradio.StartKlassicRadio";
 
     private final int[] backgrounds = {
             R.drawable.saintsrow2,
@@ -242,6 +255,10 @@ public class MainActivity extends AppCompatActivity {
         includeUndrgrnd = prefs.getBoolean(KEY_INCLUDE_UNDRGRND, true);
         includeUltor = prefs.getBoolean(KEY_INCLUDE_ULTOR, true);
         includeWorld = prefs.getBoolean(KEY_INCLUDE_WORLD, true);
+        includeFour20 = prefs.getBoolean(KEY_INCLUDE_FOUR20, true);
+        includeFunk = prefs.getBoolean(KEY_INCLUDE_FUNK, true);
+        includeK12 = prefs.getBoolean(KEY_INCLUDE_K12, true);
+        includeKlassic = prefs.getBoolean(KEY_INCLUDE_KLASSIC, true);
     }
 
     private void saveSettings() {
@@ -261,6 +278,10 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
         editor.putBoolean(KEY_INCLUDE_ULTOR, includeUltor);
         editor.putBoolean(KEY_INCLUDE_WORLD, includeWorld);
+        editor.putBoolean(KEY_INCLUDE_FOUR20, includeFour20);
+        editor.putBoolean(KEY_INCLUDE_FUNK, includeFunk);
+        editor.putBoolean(KEY_INCLUDE_K12, includeK12);
+        editor.putBoolean(KEY_INCLUDE_KLASSIC, includeKlassic);
         
         editor.apply();
     }
@@ -281,6 +302,10 @@ public class MainActivity extends AppCompatActivity {
             args.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
             args.putBoolean(KEY_INCLUDE_ULTOR, includeUltor);
             args.putBoolean(KEY_INCLUDE_WORLD, includeWorld);
+            args.putBoolean(KEY_INCLUDE_FOUR20, includeFour20);
+            args.putBoolean(KEY_INCLUDE_FUNK, includeFunk);
+            args.putBoolean(KEY_INCLUDE_K12, includeK12);
+            args.putBoolean(KEY_INCLUDE_KLASSIC, includeKlassic);
             
             mediaController.sendCustomCommand(new SessionCommand("ACTION_UPDATE_SETTINGS", Bundle.EMPTY), args);
         }
@@ -373,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(saintsLabel);
         
         GridLayout gridLayout = new GridLayout(this);
-        gridLayout.setColumnCount(3);
+        gridLayout.setColumnCount(4);
         gridLayout.setPadding(0, 10, 0, 0);
         
         final CheckBox krunchCheck = createStationCheckbox(getString(R.string.station_krunch), includeKrunch, checkboxTint);
@@ -384,6 +409,10 @@ public class MainActivity extends AppCompatActivity {
         final CheckBox undrgrndCheck = createStationCheckbox(getString(R.string.station_undrgrnd), includeUndrgrnd, checkboxTint);
         final CheckBox ultorCheck = createStationCheckbox(getString(R.string.station_ultor), includeUltor, checkboxTint);
         final CheckBox worldCheck = createStationCheckbox(getString(R.string.station_world), includeWorld, checkboxTint);
+        final CheckBox four20Check = createStationCheckbox(getString(R.string.station_four20), includeFour20, checkboxTint);
+        final CheckBox funkCheck = createStationCheckbox(getString(R.string.station_funk), includeFunk, checkboxTint);
+        final CheckBox k12Check = createStationCheckbox(getString(R.string.station_k12), includeK12, checkboxTint);
+        final CheckBox klassicCheck = createStationCheckbox(getString(R.string.station_klassic), includeKlassic, checkboxTint);
         
         gridLayout.addView(krunchCheck);
         gridLayout.addView(krhymeCheck);
@@ -393,6 +422,10 @@ public class MainActivity extends AppCompatActivity {
         gridLayout.addView(undrgrndCheck);
         gridLayout.addView(ultorCheck);
         gridLayout.addView(worldCheck);
+        gridLayout.addView(four20Check);
+        gridLayout.addView(funkCheck);
+        gridLayout.addView(k12Check);
+        gridLayout.addView(klassicCheck);
         
         layout.addView(gridLayout);
 
@@ -409,6 +442,10 @@ public class MainActivity extends AppCompatActivity {
             if (undrgrndCheck.isChecked()) count++;
             if (ultorCheck.isChecked()) count++;
             if (worldCheck.isChecked()) count++;
+            if (four20Check.isChecked()) count++;
+            if (funkCheck.isChecked()) count++;
+            if (k12Check.isChecked()) count++;
+            if (klassicCheck.isChecked()) count++;
             
             if (count < 2) {
                 Toast.makeText(this, "Please select at least 2 stations for Saints Radio", Toast.LENGTH_LONG).show();
@@ -430,6 +467,10 @@ public class MainActivity extends AppCompatActivity {
             includeUndrgrnd = undrgrndCheck.isChecked();
             includeUltor = ultorCheck.isChecked();
             includeWorld = worldCheck.isChecked();
+            includeFour20 = four20Check.isChecked();
+            includeFunk = funkCheck.isChecked();
+            includeK12 = k12Check.isChecked();
+            includeKlassic = klassicCheck.isChecked();
             
             saveSettings();
             updateServiceSettings();
@@ -545,5 +586,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggleButton6).setOnClickListener(v -> handleStationClick("undrgrnd", Broadcast_START_UNDRGRND_RADIO));
         findViewById(R.id.toggleButton7).setOnClickListener(v -> handleStationClick("ultor", Broadcast_START_ULTOR_RADIO));
         findViewById(R.id.toggleButton8).setOnClickListener(v -> handleStationClick("world", Broadcast_START_WORLD_RADIO));
+        findViewById(R.id.toggleButton9).setOnClickListener(v -> handleStationClick("four20", Broadcast_START_FOUR20_RADIO));
+        findViewById(R.id.toggleButton10).setOnClickListener(v -> handleStationClick("funk", Broadcast_START_FUNK_RADIO));
+        findViewById(R.id.toggleButton11).setOnClickListener(v -> handleStationClick("k12", Broadcast_START_K12_RADIO));
+        findViewById(R.id.toggleButton12).setOnClickListener(v -> handleStationClick("klassic", Broadcast_START_KLASSIC_RADIO));
     }
 }

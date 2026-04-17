@@ -86,6 +86,10 @@ public class MediaPlayerService extends MediaLibraryService {
     boolean includeUndrgrnd = true;
     boolean includeUltor = true;
     boolean includeWorld = true;
+    boolean includeFour20 = true;
+    boolean includeFunk = true;
+    boolean includeK12 = true;
+    boolean includeKlassic = true;
 
     private boolean ongoingCall = false;
     private CallStateCallback phoneStateListener;
@@ -275,6 +279,10 @@ public class MediaPlayerService extends MediaLibraryService {
                     items.add(createPlayableItem("undrgrnd", "Undrgrnd Radio", "undrgrnd_tile"));
                     items.add(createPlayableItem("ultor", "Ultor Radio", "ultor_tile"));
                     items.add(createPlayableItem("world", "World Radio", "world_tile"));
+                    items.add(createPlayableItem("four20", "Four20 Radio", "four20_tile"));
+                    items.add(createPlayableItem("funk", "Funk Radio", "funk_tile"));
+                    items.add(createPlayableItem("k12", "K12 Radio", "k12_tile"));
+                    items.add(createPlayableItem("klassic", "Klassic Radio", "klassic_tile"));
                 }
                 return Futures.immediateFuture(LibraryResult.ofItemList(ImmutableList.copyOf(items), params));
             }
@@ -318,6 +326,11 @@ public class MediaPlayerService extends MediaLibraryService {
                         includeUndrgrnd = args.getBoolean("includeUndrgrnd", includeUndrgrnd);
                         includeUltor = args.getBoolean("includeUltor", includeUltor);
                         includeWorld = args.getBoolean("includeWorld", includeWorld);
+                        includeFour20 = args.getBoolean("includeFour20", includeFour20);
+                        includeFunk = args.getBoolean("includeFunk", includeFunk);
+                        includeK12 = args.getBoolean("includeK12", includeK12);
+                        includeKlassic = args.getBoolean("includeKlassic", includeKlassic);
+
 
                         // If menu music was just disabled and is currently playing, stop it.
                         if (disableMenuMusic && !oldDisableMenuMusic && currentStationId.isEmpty()) {
@@ -341,17 +354,7 @@ public class MediaPlayerService extends MediaLibraryService {
 
         callStateListener();
         registerBecomingNoisyReceiver();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            register_startSaintsRadio();
-            register_startKrunchRadio();
-            register_startKrhymeRadio();
-            register_startMixRadio();
-            register_startGenxRadio();
-            register_startEzzzyRadio();
-            register_startUndrgrndRadio();
-            register_startUltorRadio();
-            register_startWorldRadio();
-        }
+        registerStationReceivers();
 
         player.addListener(new Player.Listener() {
             @Override
@@ -527,6 +530,69 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("cigany")) title = "Cigany";
         else if (title.equalsIgnoreCase("barasilianfiesta")) title = "Barasilian Fiesta";
         else if (title.equalsIgnoreCase("baidoushka")) title = "Baidoushka";
+        // Four20
+        else if (title.equalsIgnoreCase("heyboy")) title = "Hey Boy";
+        else if (title.equalsIgnoreCase("togetherbrothers")) title = "Together Brothers";
+        else if (title.equalsIgnoreCase("boomshakatack")) title = "Boom Shak A-Tack";
+        else if (title.equalsIgnoreCase("whoami")) title = "Who Am I";
+        else if (title.equalsIgnoreCase("ganjasmuggling")) title = "Ganja Smuggling";
+        else if (title.equalsIgnoreCase("gunsout")) title = "Guns Out";
+        else if (title.equalsIgnoreCase("headshigh")) title = "Heads High";
+        else if (title.equalsIgnoreCase("hereicome")) title = "Here I Come";
+        else if (title.equalsIgnoreCase("krazy")) title = "Krazy";
+        else if (title.equalsIgnoreCase("picturethis")) title = "Picture This";
+        else if (title.equalsIgnoreCase("murdershewrote")) title = "Murder She Wrote";
+        // Funk
+        else if (title.equalsIgnoreCase("lovefades")) title = "Love Fades";
+        else if (title.equalsIgnoreCase("trespasser")) title = "Trespasser";
+        else if (title.equalsIgnoreCase("gottagetyourlove")) title = "Gotta Get Your Love";
+        else if (title.equalsIgnoreCase("keeprunning")) title = "Keep Running";
+        else if (title.equalsIgnoreCase("drugsaintcool")) title = "Drugs Ain't Cool";
+        else if (title.equalsIgnoreCase("streetscene")) title = "Street Scene";
+        else if (title.equalsIgnoreCase("youcanbeastar")) title = "You Can Be A Star";
+        else if (title.equalsIgnoreCase("wakeup")) title = "Wake Up Pt. 1/Pt. 2";
+        else if (title.equalsIgnoreCase("lookwhatyouvedonetome")) title = "Look What You've Done To Me";
+        else if (title.equalsIgnoreCase("funkyinhere")) title = "Funky In Here";
+        else if (title.equalsIgnoreCase("putasmileontime")) title = "Put A Smile On Time";
+        else if (title.equalsIgnoreCase("thecissysthang")) title = "The Cissy's Thang";
+        else if (title.equalsIgnoreCase("dontgetdiscouraged")) title = "Don't Get Discouraged";
+        // K12
+        else if (title.equalsIgnoreCase("throughthehosiery")) title = "Through The Hosiery";
+        else if (title.equalsIgnoreCase("deathofamoralist")) title = "Death Of A Moralist";
+        else if (title.equalsIgnoreCase("sexyresults")) title = "Sexy Results";
+        else if (title.equalsIgnoreCase("wearerockstars")) title = "We Are Rockstars";
+        else if (title.equalsIgnoreCase("crossoverappeal")) title = "Crossover Appeal";
+        else if (title.equalsIgnoreCase("overandover")) title = "Over And Over";
+        else if (title.equalsIgnoreCase("givemeeverylittlething")) title = "Give Me Every Little Thing";
+        else if (title.equalsIgnoreCase("northamericanscum")) title = "North American Scum";
+        else if (title.equalsIgnoreCase("donandsherri")) title = "Don And Sherri";
+        else if (title.equalsIgnoreCase("streetjustice")) title = "Street Justice";
+        else if (title.equalsIgnoreCase("specialeffect")) title = "Special Effect";
+        // Klassic
+        else if (title.equalsIgnoreCase("brandenburgconcerto")) title = "Brandenburg Concerto No. 3 - Allegro";
+        else if (title.equalsIgnoreCase("harpsichordconcerto")) title = "Harpsichord Concerto No. 4 in A Major";
+        else if (title.equalsIgnoreCase("toccataandfugue")) title = "Toccata and Fugue In D Major";
+        else if (title.equalsIgnoreCase("moonlightsonata")) title = "Moonlight Sonata";
+        else if (title.equalsIgnoreCase("symphony5allegro")) title = "Symphony No. 5 In C Minor - Allegro";
+        else if (title.equalsIgnoreCase("symphony5allegroconbrio")) title = "Symphony No. 5 In C Minor - Allegro Con Brio";
+        else if (title.equalsIgnoreCase("hungariandance")) title = "Hungarian Dance No. 5";
+        else if (title.equalsIgnoreCase("coppeliaballet")) title = "Coppelia Ballet Suite Act 1 No. 1: Valse Lente";
+        else if (title.equalsIgnoreCase("anitrasdance")) title = "Anitra's Dance";
+        else if (title.equalsIgnoreCase("inthehallofthemountainking")) title = "In The Hall Of The Mountain King";
+        else if (title.equalsIgnoreCase("arrivalofthequeenofsheba")) title = "Arrival Of The Queen Of Sheba";
+        else if (title.equalsIgnoreCase("musicfortheroyalfireworks")) title = "Music For The Royal Fireworks (Overture)";
+        else if (title.equalsIgnoreCase("watermusicsuiteoverture")) title = "Water Music Suite No. 1 - Overture";
+        else if (title.equalsIgnoreCase("watermusicsuitepresto")) title = "Water Music Suite No. 1 - Presto";
+        else if (title.equalsIgnoreCase("einekleinenachtmusik")) title = "Eine Kleine Nachtmusik - Allegro";
+        else if (title.equalsIgnoreCase("haffnerserenade")) title = "Haffner Serenade No. 7 In D Major - Allegro Maestoso";
+        else if (title.equalsIgnoreCase("marriageinfigaro")) title = "Marriage In Figaro (Overture)";
+        else if (title.equalsIgnoreCase("stringquartet")) title = "String Quartet No. 14 In G Major, 2nd Movement";
+        else if (title.equalsIgnoreCase("symphony40firstmovement")) title = "Symphony No. 40 - 1st Movement";
+        else if (title.equalsIgnoreCase("nutcrackertrepak")) title = "Nutcracker Trepak";
+        else if (title.equalsIgnoreCase("sleepingbeautywaltz")) title = "Sleeping Beauty Waltz";
+        else if (title.equalsIgnoreCase("thefourseasonsspring")) title = "The Four Seasons No. 1 - The Spring (Allegro)";
+        else if (title.equalsIgnoreCase("thefourseasonssummer")) title = "The Four Seasons No. 2 - The Summer (Presto)";
+        else if (title.equalsIgnoreCase("rideofthevalkyries")) title = "Ride Of The Valkyries";
         else if (!title.isEmpty()) {
             title = title.substring(0, 1).toUpperCase() + title.substring(1);
         }
@@ -548,7 +614,7 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("milklizard")) return "The Dillinger Escape Plan";
         else if (title.equalsIgnoreCase("nothingleft")) return "As I Lay Dying";
         else if (title.equalsIgnoreCase("whatahorriblenighttohaveacurse")) return "The Black Dahlia Murder";
-        else if (title.equalsIgnoreCase("anthem")) return "Trivia";
+        else if (title.equalsIgnoreCase("anthem")) return "Trivium";
         else if (title.equalsIgnoreCase("resurrection")) return "Chimaira";
         else if (title.equalsIgnoreCase("stars")) return "Hum";
         else if (title.equalsIgnoreCase("unsung")) return "Helmet";
@@ -660,6 +726,69 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("cigany")) return "Niko Radic";
         else if (title.equalsIgnoreCase("barasilianfiesta")) return "Claudia Figueroa, Forbes Henderson, Tony Hinnigan, & Martin Taylor";
         else if (title.equalsIgnoreCase("baidoushka")) return "Robin Jeffrey";
+        // Four20
+        else if (title.equalsIgnoreCase("heyboy")) return "Buju Banton";
+        else if (title.equalsIgnoreCase("togetherbrothers")) return "Dennis Brown";
+        else if (title.equalsIgnoreCase("boomshakatack")) return "Born Jamericans";
+        else if (title.equalsIgnoreCase("whoami")) return "Beenie Man";
+        else if (title.equalsIgnoreCase("ganjasmuggling")) return "Eek-a-Mouse";
+        else if (title.equalsIgnoreCase("gunsout")) return "Ninjaman";
+        else if (title.equalsIgnoreCase("headshigh")) return "Mr. Vegas";
+        else if (title.equalsIgnoreCase("hereicome")) return "Barrington Levy";
+        else if (title.equalsIgnoreCase("krazy")) return "Elephant Man";
+        else if (title.equalsIgnoreCase("picturethis")) return "Vybz Kartel";
+        else if (title.equalsIgnoreCase("murdershewrote")) return "Chaka Demus & Pliers";
+        // Funk
+        else if (title.equalsIgnoreCase("lovefades")) return "Amnesty";
+        else if (title.equalsIgnoreCase("trespasser")) return "Bad Medicine";
+        else if (title.equalsIgnoreCase("gottagetyourlove")) return "Chocolate Star";
+        else if (title.equalsIgnoreCase("keeprunning")) return "Clifford Nyren";
+        else if (title.equalsIgnoreCase("drugsaintcool")) return "Ebony Rhythm Band";
+        else if (title.equalsIgnoreCase("streetscene")) return "Leon Mitchison";
+        else if (title.equalsIgnoreCase("youcanbeastar")) return "Luther Davis Group";
+        else if (title.equalsIgnoreCase("wakeup")) return "Pure Essence";
+        else if (title.equalsIgnoreCase("lookwhatyouvedonetome")) return "Sheila Skipworth";
+        else if (title.equalsIgnoreCase("funkyinhere")) return "Dayton Sidewinders";
+        else if (title.equalsIgnoreCase("putasmileontime")) return "The Rhythm Machine";
+        else if (title.equalsIgnoreCase("thecissysthang")) return "The Soul Seven";
+        else if (title.equalsIgnoreCase("dontgetdiscouraged")) return "UPC Allstars";
+        // K12
+        else if (title.equalsIgnoreCase("throughthehosiery")) return "Crystal Castles";
+        else if (title.equalsIgnoreCase("deathofamoralist")) return "Daniel Mansury";
+        else if (title.equalsIgnoreCase("sexyresults")) return "Death From Above 1979";
+        else if (title.equalsIgnoreCase("wearerockstars")) return "Does It Offend You, Yeah?";
+        else if (title.equalsIgnoreCase("crossoverappeal")) return "Guns 'n' Bombs";
+        else if (title.equalsIgnoreCase("overandover")) return "Hot Chip";
+        else if (title.equalsIgnoreCase("givemeeverylittlething")) return "The Juan MacLean";
+        else if (title.equalsIgnoreCase("northamericanscum")) return "LCD Soundsystem";
+        else if (title.equalsIgnoreCase("donandsherri")) return "Matthew Dear";
+        else if (title.equalsIgnoreCase("streetjustice")) return "MSTRKRFT";
+        else if (title.equalsIgnoreCase("specialeffect")) return "TRS-80";
+        // Klassic
+        else if (title.equalsIgnoreCase("brandenburgconcerto")) return "Johann Sebastian Bach";
+        else if (title.equalsIgnoreCase("harpsichordconcerto")) return "Johann Sebastian Bach";
+        else if (title.equalsIgnoreCase("toccataandfugue")) return "Johann Sebastian Bach";
+        else if (title.equalsIgnoreCase("moonlightsonata")) return "Ludwig Van Beethoven";
+        else if (title.equalsIgnoreCase("symphony5allegro")) return "Ludwig Van Beethoven";
+        else if (title.equalsIgnoreCase("symphony5allegroconbrio")) return "Ludwig Van Beethoven";
+        else if (title.equalsIgnoreCase("hungariandance")) return "Johannes Brahms";
+        else if (title.equalsIgnoreCase("coppeliaballet")) return "Leo Delibes";
+        else if (title.equalsIgnoreCase("anitrasdance")) return "Edvard Grieg";
+        else if (title.equalsIgnoreCase("inthehallofthemountainking")) return "Edvard Grieg";
+        else if (title.equalsIgnoreCase("arrivalofthequeenofsheba")) return "Georg Friedrich Handel";
+        else if (title.equalsIgnoreCase("musicfortheroyalfireworks")) return "Georg Friedrich Handel";
+        else if (title.equalsIgnoreCase("watermusicsuiteoverture")) return "Georg Friedrich Handel";
+        else if (title.equalsIgnoreCase("watermusicsuitepresto")) return "Georg Friedrich Handel";
+        else if (title.equalsIgnoreCase("einekleinenachtmusik")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("haffnerserenade")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("marriageinfigaro")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("stringquartet")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("symphony40firstmovement")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("nutcrackertrepak")) return "Peter Ilyich Tchaikovsky";
+        else if (title.equalsIgnoreCase("sleepingbeautywaltz")) return "Peter Ilyich Tchaikovsky";
+        else if (title.equalsIgnoreCase("thefourseasonsspring")) return "Antonio Vivaldi";
+        else if (title.equalsIgnoreCase("thefourseasonssummer")) return "Antonio Vivaldi";
+        else if (title.equalsIgnoreCase("rideofthevalkyries")) return "Richard Wagner";
 
         // Fallback to station name for non-songs (commercials/news)
         return currentStationName;
@@ -716,6 +845,10 @@ public class MediaPlayerService extends MediaLibraryService {
             case "undrgrnd": currentStationName = "Undrgrnd Radio"; break;
             case "ultor": currentStationName = "Ultor Radio"; break;
             case "world": currentStationName = "World Radio"; break;
+            case "four20": currentStationName = "Four20 Radio"; break;
+            case "funk": currentStationName = "Funk Radio"; break;
+            case "k12": currentStationName = "K12 Radio"; break;
+            case "klassic": currentStationName = "Klassic Radio"; break;
         }
         
         player.stop();
@@ -785,6 +918,10 @@ public class MediaPlayerService extends MediaLibraryService {
             }
         }
         unregisterReceiver(becomingNoisyReceiver);
+        unregisterStationReceivers();
+    }
+
+    private void unregisterStationReceivers() {
         unregisterReceiver(startSaintsRadio);
         unregisterReceiver(startKrunchRadio);
         unregisterReceiver(startKrhymeRadio);
@@ -794,6 +931,10 @@ public class MediaPlayerService extends MediaLibraryService {
         unregisterReceiver(startUndrgrndRadio);
         unregisterReceiver(startUltorRadio);
         unregisterReceiver(startWorldRadio);
+        unregisterReceiver(startFour20Radio);
+        unregisterReceiver(startFunkRadio);
+        unregisterReceiver(startK12Radio);
+        unregisterReceiver(startKlassicRadio);
     }
 
     private void loadMedia(String radio) {
@@ -825,6 +966,10 @@ public class MediaPlayerService extends MediaLibraryService {
                 else if (name.startsWith("undrgrnd_") && includeUndrgrnd) categorizeFile(name);
                 else if (name.startsWith("ultor_") && includeUltor) categorizeFile(name);
                 else if (name.startsWith("world_") && includeWorld) categorizeFile(name);
+                else if (name.startsWith("four20_") && includeFour20) categorizeFile(name);
+                else if (name.startsWith("funk_") && includeFunk) categorizeFile(name);
+                else if (name.startsWith("k12_") && includeK12) categorizeFile(name);
+                else if (name.startsWith("klassic_") && includeKlassic) categorizeFile(name);
             } else if (name.startsWith(radio.toLowerCase() + "_")) {
                 categorizeFile(name);
             }
@@ -1106,18 +1251,37 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     }
 
+    private void registerStationReceivers() {
+        registerStationReceiver(startSaintsRadio, MainActivity.Broadcast_START_SAINTS_RADIO);
+        registerStationReceiver(startKrunchRadio, MainActivity.Broadcast_START_KRUNCH_RADIO);
+        registerStationReceiver(startKrhymeRadio, MainActivity.Broadcast_START_KRHYME_RADIO);
+        registerStationReceiver(startMixRadio, MainActivity.Broadcast_START_MIX_RADIO);
+        registerStationReceiver(startGenxRadio, MainActivity.Broadcast_START_GENX_RADIO);
+        registerStationReceiver(startEzzzyRadio, MainActivity.Broadcast_START_EZZZY_RADIO);
+        registerStationReceiver(startUndrgrndRadio, MainActivity.Broadcast_START_UNDRGRND_RADIO);
+        registerStationReceiver(startUltorRadio, MainActivity.Broadcast_START_ULTOR_RADIO);
+        registerStationReceiver(startWorldRadio, MainActivity.Broadcast_START_WORLD_RADIO);
+        registerStationReceiver(startFour20Radio, MainActivity.Broadcast_START_FOUR20_RADIO);
+        registerStationReceiver(startFunkRadio, MainActivity.Broadcast_START_FUNK_RADIO);
+        registerStationReceiver(startK12Radio, MainActivity.Broadcast_START_K12_RADIO);
+        registerStationReceiver(startKlassicRadio, MainActivity.Broadcast_START_KLASSIC_RADIO);
+    }
+
+    private void registerStationReceiver(BroadcastReceiver receiver, String action) {
+        IntentFilter filter = new IntentFilter(action);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, filter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(receiver, filter);
+        }
+    }
+
     private final BroadcastReceiver startSaintsRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             startRadio("saints");
         }
     };
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startSaintsRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_SAINTS_RADIO);
-        registerReceiver(startSaintsRadio, filter, RECEIVER_EXPORTED);
-    }
 
     private final BroadcastReceiver startKrunchRadio = new BroadcastReceiver() {
         @Override
@@ -1126,24 +1290,12 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startKrunchRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_KRUNCH_RADIO);
-        registerReceiver(startKrunchRadio, filter, RECEIVER_EXPORTED);
-    }
-
     private final BroadcastReceiver startKrhymeRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             startRadio("krhyme");
         }
     };
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startKrhymeRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_KRHYME_RADIO);
-        registerReceiver(startKrhymeRadio, filter, RECEIVER_EXPORTED);
-    }
 
     private final BroadcastReceiver startMixRadio = new BroadcastReceiver() {
         @Override
@@ -1152,24 +1304,12 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startMixRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_MIX_RADIO);
-        registerReceiver(startMixRadio, filter, RECEIVER_EXPORTED);
-    }
-
     private final BroadcastReceiver startGenxRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             startRadio("genx");
         }
     };
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startGenxRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_GENX_RADIO);
-        registerReceiver(startGenxRadio, filter, RECEIVER_EXPORTED);
-    }
 
     private final BroadcastReceiver startEzzzyRadio = new BroadcastReceiver() {
         @Override
@@ -1178,24 +1318,12 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startEzzzyRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_EZZZY_RADIO);
-        registerReceiver(startEzzzyRadio, filter, RECEIVER_EXPORTED);
-    }
-
     private final BroadcastReceiver startUndrgrndRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             startRadio("undrgrnd");
         }
     };
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startUndrgrndRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_UNDRGRND_RADIO);
-        registerReceiver(startUndrgrndRadio, filter, RECEIVER_EXPORTED);
-    }
 
     private final BroadcastReceiver startUltorRadio = new BroadcastReceiver() {
         @Override
@@ -1204,12 +1332,6 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startUltorRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_ULTOR_RADIO);
-        registerReceiver(startUltorRadio, filter, RECEIVER_EXPORTED);
-    }
-
     private final BroadcastReceiver startWorldRadio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1217,9 +1339,31 @@ public class MediaPlayerService extends MediaLibraryService {
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void register_startWorldRadio() {
-        IntentFilter filter = new IntentFilter(MainActivity.Broadcast_START_WORLD_RADIO);
-        registerReceiver(startWorldRadio, filter, RECEIVER_EXPORTED);
-    }
+    private final BroadcastReceiver startFour20Radio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("four20");
+        }
+    };
+
+    private final BroadcastReceiver startFunkRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("funk");
+        }
+    };
+
+    private final BroadcastReceiver startK12Radio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("k12");
+        }
+    };
+
+    private final BroadcastReceiver startKlassicRadio = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startRadio("klassic");
+        }
+    };
 }

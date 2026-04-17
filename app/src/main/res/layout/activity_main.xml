@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/saintsrow2"
     android:clipChildren="false"
-    android:clipToPadding="false"
+    android:clipToPadding="true"
     tools:context=".MainActivity">
 
     <!-- Settings Button -->
@@ -38,7 +38,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- ROW 1 (Top) -->
+        <!-- ROW 0 (Top Extension) -->
+        <ImageButton
+            android:id="@+id/toggleButton9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/four20_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/four20_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toTopOf="@+id/toggleButton1"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton10"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintWidth_percent="0.33"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/toggleButton10"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/funk_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/funk_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toTopOf="@+id/toggleButton7"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton9"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintWidth_percent="0.33"
+            tools:ignore="ContentDescription" />
+
+        <!-- ROW 1 (Original Top) -->
         <ImageButton
             android:id="@+id/toggleButton1"
             android:layout_width="0dp"
@@ -52,8 +87,7 @@
             app:layout_constraintEnd_toStartOf="@+id/toggleButton7"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -69,8 +103,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton2"
             app:layout_constraintStart_toEndOf="@+id/toggleButton1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/toggleButton10"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -86,8 +119,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/toggleButton7"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/toggleButton10"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -104,8 +136,9 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleButton1"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -150,12 +183,13 @@
             android:scaleType="fitCenter"
             android:src="@drawable/mix_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton8"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleButton5"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toTopOf="@id/toggleButton11"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -167,7 +201,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/world_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/toggleButton12"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton4"
             app:layout_constraintStart_toEndOf="@+id/toggleButton3"
@@ -183,11 +217,44 @@
             android:scaleType="fitCenter"
             android:src="@drawable/genx_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/toggleButton12"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/toggleButton8"
             app:layout_constraintTop_toBottomOf="@+id/toggleButton6"
+            app:layout_constraintWidth_percent="0.33"
+            tools:ignore="ContentDescription" />
+
+        <!-- ROW 4 (Bottom Extension) -->
+        <ImageButton
+            android:id="@+id/toggleButton11"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/k12_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/k12_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton12"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton12"
+            app:layout_constraintWidth_percent="0.33"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/toggleButton12"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/klassic_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/klassic_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton11"
+            app:layout_constraintTop_toBottomOf="@+id/toggleButton4"
             app:layout_constraintWidth_percent="0.33"
             tools:ignore="ContentDescription" />
 
@@ -197,7 +264,7 @@
         android:id="@+id/controlsLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:gravity="center_vertical"

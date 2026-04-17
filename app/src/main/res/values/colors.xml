@@ -18,4 +18,8 @@
     <color name="underground_stroke">#E11F26</color> <!-- Red -->
     <color name="ultor_stroke">#F15A24</color>    <!-- Orange -->
     <color name="world_stroke">#00ADEF</color>    <!-- Blue -->
+    <color name="four20_stroke">#43A047</color>   <!-- Green -->
+    <color name="funk_stroke">#FDB813</color>    <!-- Gold -->
+    <color name="k12_stroke">#F15A24</color>     <!-- Orange -->
+    <color name="klassic_stroke">#FFFFFF</color>  <!-- White -->
 </resources>

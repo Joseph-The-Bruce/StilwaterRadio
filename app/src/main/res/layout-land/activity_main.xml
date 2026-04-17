@@ -36,7 +36,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- ROW 1 (Top - 4 buttons: Krunch, Krhyme, Ezzzy, Underground) -->
+        <!-- ROW 1 (Top - 6 buttons) -->
+        <ImageButton
+            android:id="@+id/toggleButton9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/four20_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/four20_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toTopOf="@+id/toggleButton7"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton10"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintWidth_percent="0.13"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/toggleButton10"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/funk_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/funk_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton9"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton1"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton9"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
+            tools:ignore="ContentDescription" />
+
         <ImageButton
             android:id="@+id/toggleButton1"
             android:layout_width="0dp"
@@ -45,14 +79,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/krunch_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toTopOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton2"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton10"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -63,12 +95,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/krhyme_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton1"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton5"
             app:layout_constraintStart_toEndOf="@+id/toggleButton1"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton1"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -79,12 +111,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ezzzy_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton1"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton6"
             app:layout_constraintStart_toEndOf="@+id/toggleButton2"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton1"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -95,15 +127,32 @@
             android:scaleType="fitCenter"
             android:src="@drawable/undrgrnd_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton1"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/toggleButton5"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton1"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
-        <!-- ROW 2 (Bottom - 5 buttons: World, Mix, Saints, GenX, Ultor) -->
+        <!-- ROW 2 (Bottom - 7 buttons) -->
+        <ImageButton
+            android:id="@+id/toggleButton7"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ultor_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ultor_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton8"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggleButton9"
+            app:layout_constraintWidth_percent="0.13"
+            tools:ignore="ContentDescription" />
+
         <ImageButton
             android:id="@+id/toggleButton8"
             android:layout_width="0dp"
@@ -112,13 +161,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/world_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton3"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleButton1"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton7"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -129,12 +177,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/mix_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton"
             app:layout_constraintStart_toEndOf="@+id/toggleButton8"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton8"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -145,12 +193,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/saints_logo"
             android:stateListAnimator="@animator/saints_button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/toggleButton4"
             app:layout_constraintStart_toEndOf="@+id/toggleButton3"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton8"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -161,28 +209,44 @@
             android:scaleType="fitCenter"
             android:src="@drawable/genx_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/toggleButton7"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton11"
             app:layout_constraintStart_toEndOf="@+id/toggleButton"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton8"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
         <ImageButton
-            android:id="@+id/toggleButton7"
+            android:id="@+id/toggleButton11"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/ultor_button_background"
+            android:background="@drawable/k12_button_background"
             android:scaleType="fitCenter"
-            android:src="@drawable/ultor_logo"
+            android:src="@drawable/k12_logo"
             android:stateListAnimator="@animator/button_press"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleButton8"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/toggleButton12"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton4"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/toggleButton12"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/klassic_button_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/klassic_logo"
+            android:stateListAnimator="@animator/button_press"
+            app:layout_constraintBottom_toBottomOf="@+id/toggleButton7"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/toggleButton4"
-            app:layout_constraintTop_toTopOf="@+id/toggleButton8"
-            app:layout_constraintWidth_percent="0.15"
+            app:layout_constraintStart_toEndOf="@+id/toggleButton11"
+            app:layout_constraintTop_toTopOf="@+id/toggleButton7"
+            app:layout_constraintWidth_percent="0.13"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

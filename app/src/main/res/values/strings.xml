@@ -16,6 +16,10 @@
     <string name="station_undrgrnd">Undrgrnd</string>
     <string name="station_ultor">Ultor</string>
     <string name="station_world">World</string>
+    <string name="station_four20">Four20</string>
+    <string name="station_funk">Funk</string>
+    <string name="station_k12">K12</string>
+    <string name="station_klassic">Klassic</string>
     <string name="settings_commercials_label">Commercials after each song: %1$d</string>
     <string name="settings_news_label">Songs before news: %1$d</string>
     <string name="settings_singalong_label">Include Sing Alongs</string>
