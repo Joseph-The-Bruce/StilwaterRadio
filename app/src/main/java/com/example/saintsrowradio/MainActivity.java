@@ -323,23 +323,23 @@ public class MainActivity extends AppCompatActivity {
     private void updateServiceSettings() {
         if (mediaController != null) {
             Bundle args = new Bundle();
-            args.putInt(KEY_COMMERCIALS, commercialsPerSong);
-            args.putInt(KEY_NEWS, songsBeforeNews);
-            args.putBoolean(KEY_SING_ALONGS, includeSingAlongs);
-            args.putBoolean(KEY_DISABLE_MENU_MUSIC, disableMenuMusic);
+            args.putInt("commercialsPerSong", commercialsPerSong);
+            args.putInt("songsBeforeNews", songsBeforeNews);
+            args.putBoolean("includeSingAlongs", includeSingAlongs);
+            args.putBoolean("disableMenuMusic", disableMenuMusic);
             
-            args.putBoolean(KEY_INCLUDE_KRUNCH, includeKrunch);
-            args.putBoolean(KEY_INCLUDE_KRHYME, includeKrhyme);
-            args.putBoolean(KEY_INCLUDE_MIX, includeMix);
-            args.putBoolean(KEY_INCLUDE_GENX, includeGenx);
-            args.putBoolean(KEY_INCLUDE_EZZZY, includeEzzzy);
-            args.putBoolean(KEY_INCLUDE_UNDRGRND, includeUndrgrnd);
-            args.putBoolean(KEY_INCLUDE_ULTOR, includeUltor);
-            args.putBoolean(KEY_INCLUDE_WORLD, includeWorld);
-            args.putBoolean(KEY_INCLUDE_FOUR20, includeFour20);
-            args.putBoolean(KEY_INCLUDE_FUNK, includeFunk);
-            args.putBoolean(KEY_INCLUDE_K12, includeK12);
-            args.putBoolean(KEY_INCLUDE_KLASSIC, includeKlassic);
+            args.putBoolean("includeKrunch", includeKrunch);
+            args.putBoolean("includeKrhyme", includeKrhyme);
+            args.putBoolean("includeMix", includeMix);
+            args.putBoolean("includeGenx", includeGenx);
+            args.putBoolean("includeEzzzy", includeEzzzy);
+            args.putBoolean("includeUndrgrnd", includeUndrgrnd);
+            args.putBoolean("includeUltor", includeUltor);
+            args.putBoolean("includeWorld", includeWorld);
+            args.putBoolean("includeFour20", includeFour20);
+            args.putBoolean("includeFunk", includeFunk);
+            args.putBoolean("includeK12", includeK12);
+            args.putBoolean("includeKlassic", includeKlassic);
             
             mediaController.sendCustomCommand(new SessionCommand("ACTION_UPDATE_SETTINGS", Bundle.EMPTY), args);
         }

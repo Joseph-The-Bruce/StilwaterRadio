@@ -156,9 +156,25 @@ public class MediaPlayerService extends MediaLibraryService {
     public void onCreate() {
         super.onCreate();
 
-        // Load initial disableMenuMusic setting from SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("SaintsRadioPrefs", MODE_PRIVATE);
+        // Load initial settings from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        commercialsPerSong = prefs.getInt("commercialsPerSong", 3);
+        songsBeforeNews = prefs.getInt("songsBeforeNews", 5);
+        includeSingAlongs = prefs.getBoolean("includeSingAlongs", false);
         disableMenuMusic = prefs.getBoolean("disableMenuMusic", false);
+
+        includeKrunch = prefs.getBoolean("includeKrunch", true);
+        includeKrhyme = prefs.getBoolean("includeKrhyme", true);
+        includeMix = prefs.getBoolean("includeMix", true);
+        includeGenx = prefs.getBoolean("includeGenx", true);
+        includeEzzzy = prefs.getBoolean("includeEzzzy", true);
+        includeUndrgrnd = prefs.getBoolean("includeUndrgrnd", true);
+        includeUltor = prefs.getBoolean("includeUltor", true);
+        includeWorld = prefs.getBoolean("includeWorld", true);
+        includeFour20 = prefs.getBoolean("includeFour20", true);
+        includeFunk = prefs.getBoolean("includeFunk", true);
+        includeK12 = prefs.getBoolean("includeK12", true);
+        includeKlassic = prefs.getBoolean("includeKlassic", true);
 
         // Configure Audio Attributes for Media Playback
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
