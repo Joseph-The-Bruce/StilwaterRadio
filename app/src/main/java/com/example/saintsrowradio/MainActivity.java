@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     
     // Default settings values
     private int commercialsPerSong = 3;
+    private int songsPerRotation = 1;
     private int songsBeforeNews = 5;
     private boolean includeSingAlongs = false;
     private boolean skipSplash = false;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String PREFS_NAME = "SaintsRadioPrefs";
     private static final String KEY_COMMERCIALS = "commercialsPerSong";
+    private static final String KEY_SONGS_PER_ROTATION = "songsPerRotation";
     private static final String KEY_NEWS = "songsBeforeNews";
     private static final String KEY_SING_ALONGS = "includeSingAlongs";
     public static final String KEY_SKIP_SPLASH = "skipSplash";
@@ -332,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadSettings() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         commercialsPerSong = prefs.getInt(KEY_COMMERCIALS, 3);
+        songsPerRotation = prefs.getInt(KEY_SONGS_PER_ROTATION, 1);
         songsBeforeNews = prefs.getInt(KEY_NEWS, 5);
         includeSingAlongs = prefs.getBoolean(KEY_SING_ALONGS, false);
         skipSplash = prefs.getBoolean(KEY_SKIP_SPLASH, false);
@@ -355,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(KEY_COMMERCIALS, commercialsPerSong);
+        editor.putInt(KEY_SONGS_PER_ROTATION, songsPerRotation);
         editor.putInt(KEY_NEWS, songsBeforeNews);
         editor.putBoolean(KEY_SING_ALONGS, includeSingAlongs);
         editor.putBoolean(KEY_SKIP_SPLASH, skipSplash);
@@ -380,6 +384,7 @@ public class MainActivity extends AppCompatActivity {
         if (mediaController != null) {
             Bundle args = new Bundle();
             args.putInt("commercialsPerSong", commercialsPerSong);
+            args.putInt("songsPerRotation", songsPerRotation);
             args.putInt("songsBeforeNews", songsBeforeNews);
             args.putBoolean("includeSingAlongs", includeSingAlongs);
             args.putBoolean("disableMenuMusic", disableMenuMusic);
@@ -424,6 +429,20 @@ public class MainActivity extends AppCompatActivity {
         commSlider.setValue((float) commercialsPerSong);
         commSlider.addOnChangeListener((slider, value, fromUser) -> commLabel.setText(getString(R.string.settings_commercials_label, (int)value)));
         layout.addView(commSlider);
+
+        // Songs per Rotation Slider
+        final TextView songsPerRotationLabel = new TextView(this);
+        songsPerRotationLabel.setText(getString(R.string.settings_songs_per_rotation_label, songsPerRotation));
+        songsPerRotationLabel.setPadding(0, 40, 0, 0);
+        layout.addView(songsPerRotationLabel);
+
+        final Slider songsPerRotationSlider = new Slider(this);
+        songsPerRotationSlider.setValueFrom(1f);
+        songsPerRotationSlider.setValueTo(5f);
+        songsPerRotationSlider.setStepSize(1f);
+        songsPerRotationSlider.setValue((float) songsPerRotation);
+        songsPerRotationSlider.addOnChangeListener((slider, value, fromUser) -> songsPerRotationLabel.setText(getString(R.string.settings_songs_per_rotation_label, (int)value)));
+        layout.addView(songsPerRotationSlider);
 
         // News Slider
         final TextView newsLabel = new TextView(this);
@@ -544,6 +563,7 @@ public class MainActivity extends AppCompatActivity {
             }
             
             commercialsPerSong = (int) commSlider.getValue();
+            songsPerRotation = (int) songsPerRotationSlider.getValue();
             songsBeforeNews = (int) newsSlider.getValue();
             includeSingAlongs = singAlongCheckbox.isChecked();
             skipSplash = skipSplashCheckbox.isChecked();

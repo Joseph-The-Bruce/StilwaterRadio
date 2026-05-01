@@ -20,7 +20,8 @@
     <string name="station_funk">Funk</string>
     <string name="station_k12">K12</string>
     <string name="station_klassic">Klassic</string>
-    <string name="settings_commercials_label">Commercials after each song: %1$d</string>
+    <string name="settings_commercials_label">Commercials per rotation: %1$d</string>
+    <string name="settings_songs_per_rotation_label">Songs before commercials: %1$d</string>
     <string name="settings_news_label">Songs before news: %1$d</string>
     <string name="settings_singalong_label">Include Sing Alongs</string>
     <string name="settings_menu_music_label">Disable Menu Music</string>

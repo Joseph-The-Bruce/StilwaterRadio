@@ -78,6 +78,8 @@ public class MediaPlayerService extends MediaLibraryService {
     
     // Configurable rotation settings
     int commercialsPerSong = 3;
+    int songsPerRotation = 1;
+    int songsPlayedInRotation = 0;
     int songsBeforeNews = 5;
     boolean includeSingAlongs = false;
     boolean disableMenuMusic = false;
@@ -159,6 +161,7 @@ public class MediaPlayerService extends MediaLibraryService {
         // Load initial settings from SharedPreferences
         SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         commercialsPerSong = prefs.getInt("commercialsPerSong", 3);
+        songsPerRotation = prefs.getInt("songsPerRotation", 1);
         songsBeforeNews = prefs.getInt("songsBeforeNews", 5);
         includeSingAlongs = prefs.getBoolean("includeSingAlongs", false);
         disableMenuMusic = prefs.getBoolean("disableMenuMusic", false);
@@ -338,6 +341,7 @@ public class MediaPlayerService extends MediaLibraryService {
                         return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
                     case ACTION_UPDATE_SETTINGS:
                         commercialsPerSong = args.getInt("commercialsPerSong", commercialsPerSong);
+                        songsPerRotation = args.getInt("songsPerRotation", songsPerRotation);
                         songsBeforeNews = args.getInt("songsBeforeNews", songsBeforeNews);
                         includeSingAlongs = args.getBoolean("includeSingAlongs", includeSingAlongs);
                         
@@ -861,6 +865,7 @@ public class MediaPlayerService extends MediaLibraryService {
 
     private void startRadio(String radio) {
         currentStationId = radio.toLowerCase();
+        songsPlayedInRotation = 0;
         switch (currentStationId) {
             case "saints": currentStationName = "Saints Radio"; break;
             case "krunch": currentStationName = "Krunch Radio"; break;
@@ -1095,7 +1100,32 @@ public class MediaPlayerService extends MediaLibraryService {
                 playNextInSequence();
                 return;
             }
-        } else if (Objects.equals(soundType, "outro") || (Objects.equals(soundType, "commercial") && (commItr < commercialsPerSong))) {
+        } else if (Objects.equals(soundType, "outro")) {
+            songsPlayedInRotation++;
+            if (songsPlayedInRotation < songsPerRotation) {
+                // Next song in rotation
+                if (songQueue.isEmpty()) {
+                    generateSongQueue();
+                }
+                currentSongFile = songQueue.remove(0);
+                prepareSongAssets(currentSongFile);
+
+                if (!introList.isEmpty()) {
+                    Collections.shuffle(introList);
+                    player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(introList.get(0), "Station Intro", "intro")));
+                    soundType = "intro";
+                } else {
+                    soundType = "intro";
+                    playNextInSequence();
+                    return;
+                }
+            } else {
+                songsPlayedInRotation = 0;
+                soundType = "commercial_block"; // Intermediate state
+                playNextInSequence();
+                return;
+            }
+        } else if (Objects.equals(soundType, "commercial_block") || (Objects.equals(soundType, "commercial") && (commItr < commercialsPerSong))) {
             if (commercialsPerSong > 0 && !commercials.isEmpty()) {
                 if (commercialQueue.isEmpty()) {
                     commercialQueue.addAll(commercials);
