@@ -117,7 +117,15 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.saints_promo,
             R.drawable.saints_large_logo,
             R.drawable.white_shirt,
-            R.drawable.white_suit
+            R.drawable.white_suit,
+            R.drawable.saints_tag1,
+            R.drawable.saints_tag2,
+            R.drawable.saints_tag3,
+            R.drawable.saints_tag4,
+            R.drawable.saints_tag5,
+            R.drawable.saints_tag6,
+            R.drawable.saints_tag7,
+            R.drawable.saints_tag8
     };
     private int currentBackgroundResId = R.drawable.saintsrow2;
     private final Random random = new Random();
@@ -226,12 +234,28 @@ public class MainActivity extends AppCompatActivity {
         if (mainView != null) {
             boolean isPortrait = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
             int bgToApply = currentBackgroundResId;
-            
+
             if (isPortrait) {
                 if (currentBackgroundResId == R.drawable.saints_large_logo) {
                     bgToApply = R.drawable.saints_logo_pattern_portrait;
                 } else if (currentBackgroundResId == R.drawable.saintsrow2) {
                     bgToApply = R.drawable.saintsrow2_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag1) {
+                    bgToApply = R.drawable.saints_tag1_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag2) {
+                    bgToApply = R.drawable.saints_tag2_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag3) {
+                    bgToApply = R.drawable.saints_tag3_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag4) {
+                    bgToApply = R.drawable.saints_tag4_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag5) {
+                    bgToApply = R.drawable.saints_tag5_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag6) {
+                    bgToApply = R.drawable.saints_tag6_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag7) {
+                    bgToApply = R.drawable.saints_tag7_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_tag8) {
+                    bgToApply = R.drawable.saints_tag8_portrait;
                 }
             }
             
