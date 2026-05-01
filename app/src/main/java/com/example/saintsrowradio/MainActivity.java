@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -610,8 +612,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void playBeep() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 150);
+    }
+
     private void handleStationClick(String stationId, String broadcastAction) {
         vibrate();
+        playBeep();
         if (mediaController != null) {
             if (activeStationId.equals(stationId) && mediaController.isPlaying()) {
                 mediaController.pause();
