@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 if (nothingActive || activeStationId.equals(stationIds[i])) {
                     v.setAlpha(1.0f);
                 } else {
-                    v.setAlpha(0.5f); // Dim the inactive stations
+                    v.setAlpha(0.4f); // Dim the inactive stations
                 }
             }
         }
@@ -613,8 +613,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playBeep() {
-        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 150);
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 70);
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
     }
 
     private void handleStationClick(String stationId, String broadcastAction) {

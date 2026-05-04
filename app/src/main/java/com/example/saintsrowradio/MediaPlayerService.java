@@ -1091,40 +1091,60 @@ public class MediaPlayerService extends MediaLibraryService {
             newsItr = newsItr + 1;
             soundType = "song";
         } else if (Objects.equals(soundType, "song")) {
-            if (!outroList.isEmpty()) {
-                Collections.shuffle(outroList);
-                player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(outroList.get(0), "Station Outro", "outro")));
-                soundType = "outro";
-            } else {
-                soundType = "outro";
-                playNextInSequence();
-                return;
-            }
-        } else if (Objects.equals(soundType, "outro")) {
             songsPlayedInRotation++;
             if (songsPlayedInRotation < songsPerRotation) {
-                // Next song in rotation
-                if (songQueue.isEmpty()) {
-                    generateSongQueue();
-                }
-                currentSongFile = songQueue.remove(0);
-                prepareSongAssets(currentSongFile);
-
-                if (!introList.isEmpty()) {
-                    Collections.shuffle(introList);
-                    player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(introList.get(0), "Station Intro", "intro")));
-                    soundType = "intro";
+                // Randomly pick Outro of current song OR Intro of next song for transition
+                if (random.nextBoolean() && !outroList.isEmpty()) {
+                    Collections.shuffle(outroList);
+                    player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(outroList.get(0), "Station Outro", "outro")));
+                    soundType = "transition_outro";
                 } else {
-                    soundType = "intro";
+                    // Skip current outro, prepare next song and play its intro
+                    if (songQueue.isEmpty()) {
+                        generateSongQueue();
+                    }
+                    currentSongFile = songQueue.remove(0);
+                    prepareSongAssets(currentSongFile);
+
+                    if (!introList.isEmpty()) {
+                        Collections.shuffle(introList);
+                        player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(introList.get(0), "Station Intro", "intro")));
+                        soundType = "intro";
+                    } else {
+                        // No intro, just play the song
+                        player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(currentSongFile, currentSongFile, "song")));
+                        newsItr++;
+                        soundType = "song";
+                    }
+                }
+            } else {
+                // End of rotation, play normal outro
+                if (!outroList.isEmpty()) {
+                    Collections.shuffle(outroList);
+                    player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(outroList.get(0), "Station Outro", "outro")));
+                    soundType = "outro";
+                } else {
+                    soundType = "outro";
                     playNextInSequence();
                     return;
                 }
-            } else {
-                songsPlayedInRotation = 0;
-                soundType = "commercial_block"; // Intermediate state
-                playNextInSequence();
-                return;
             }
+        } else if (Objects.equals(soundType, "transition_outro")) {
+            // After playing a transition outro, prepare and play the next song (skipping its intro)
+            if (songQueue.isEmpty()) {
+                generateSongQueue();
+            }
+            currentSongFile = songQueue.remove(0);
+            prepareSongAssets(currentSongFile);
+
+            player.setMediaItem(Objects.requireNonNull(getMediaItemWithStationMetadata(currentSongFile, currentSongFile, "song")));
+            newsItr++;
+            soundType = "song";
+        } else if (Objects.equals(soundType, "outro")) {
+            songsPlayedInRotation = 0;
+            soundType = "commercial_block"; // Intermediate state
+            playNextInSequence();
+            return;
         } else if (Objects.equals(soundType, "commercial_block") || (Objects.equals(soundType, "commercial") && (commItr < commercialsPerSong))) {
             if (commercialsPerSong > 0 && !commercials.isEmpty()) {
                 if (commercialQueue.isEmpty()) {
