@@ -298,7 +298,7 @@ public class MediaPlayerService extends MediaLibraryService {
                     int pageSize,
                     @Nullable MediaLibraryService.LibraryParams params) {
                 List<MediaItem> items = new ArrayList<>();
-                if (parentId.equals("node_root")) {
+                if (Objects.equals(parentId, "node_root")) {
                     items.add(createPlayableItem("saints", "Saints Radio", "saints_tile"));
                     items.add(createPlayableItem("krunch", "Krunch Radio", "krunch_tile"));
                     items.add(createPlayableItem("krhyme", "Krhyme Radio", "krhyme_tile"));
@@ -422,12 +422,7 @@ public class MediaPlayerService extends MediaLibraryService {
     private String formatSongTitle(String rawName) {
         if (rawName == null) return "Unknown Song";
         
-        String title = rawName;
-        if (title.contains("_")) {
-            title = title.substring(title.indexOf("_") + 1);
-        }
-
-        // Remove suffixes first to avoid matching special cases incorrectly
+        String title = rawName.contains("_") ? rawName.substring(rawName.indexOf("_") + 1) : rawName;
         String suffix = "";
         if (title.endsWith("male1") || title.endsWith("male2") || title.endsWith("male3")) {
             suffix = " (Male Sing Along)";
@@ -795,29 +790,29 @@ public class MediaPlayerService extends MediaLibraryService {
         else if (title.equalsIgnoreCase("streetjustice")) return "MSTRKRFT";
         else if (title.equalsIgnoreCase("specialeffect")) return "TRS-80";
         // Klassic
-        else if (title.equalsIgnoreCase("brandenburgconcerto")) return "Johann Sebastian Bach";
-        else if (title.equalsIgnoreCase("harpsichordconcerto")) return "Johann Sebastian Bach";
-        else if (title.equalsIgnoreCase("toccataandfugue")) return "Johann Sebastian Bach";
-        else if (title.equalsIgnoreCase("moonlightsonata")) return "Ludwig Van Beethoven";
-        else if (title.equalsIgnoreCase("symphony5allegro")) return "Ludwig Van Beethoven";
-        else if (title.equalsIgnoreCase("symphony5allegroconbrio")) return "Ludwig Van Beethoven";
+        else if (title.equalsIgnoreCase("brandenburgconcerto") || 
+                 title.equalsIgnoreCase("harpsichordconcerto") || 
+                 title.equalsIgnoreCase("toccataandfugue")) return "Johann Sebastian Bach";
+        else if (title.equalsIgnoreCase("moonlightsonata") || 
+                 title.equalsIgnoreCase("symphony5allegro") || 
+                 title.equalsIgnoreCase("symphony5allegroconbrio")) return "Ludwig Van Beethoven";
         else if (title.equalsIgnoreCase("hungariandance")) return "Johannes Brahms";
         else if (title.equalsIgnoreCase("coppeliaballet")) return "Leo Delibes";
-        else if (title.equalsIgnoreCase("anitrasdance")) return "Edvard Grieg";
-        else if (title.equalsIgnoreCase("inthehallofthemountainking")) return "Edvard Grieg";
-        else if (title.equalsIgnoreCase("arrivalofthequeenofsheba")) return "Georg Friedrich Handel";
-        else if (title.equalsIgnoreCase("musicfortheroyalfireworks")) return "Georg Friedrich Handel";
-        else if (title.equalsIgnoreCase("watermusicsuiteoverture")) return "Georg Friedrich Handel";
-        else if (title.equalsIgnoreCase("watermusicsuitepresto")) return "Georg Friedrich Handel";
-        else if (title.equalsIgnoreCase("einekleinenachtmusik")) return "Wolfgang Amadeus Mozart";
-        else if (title.equalsIgnoreCase("haffnerserenade")) return "Wolfgang Amadeus Mozart";
-        else if (title.equalsIgnoreCase("marriageinfigaro")) return "Wolfgang Amadeus Mozart";
-        else if (title.equalsIgnoreCase("stringquartet")) return "Wolfgang Amadeus Mozart";
-        else if (title.equalsIgnoreCase("symphony40firstmovement")) return "Wolfgang Amadeus Mozart";
-        else if (title.equalsIgnoreCase("nutcrackertrepak")) return "Peter Ilyich Tchaikovsky";
-        else if (title.equalsIgnoreCase("sleepingbeautywaltz")) return "Peter Ilyich Tchaikovsky";
-        else if (title.equalsIgnoreCase("thefourseasonsspring")) return "Antonio Vivaldi";
-        else if (title.equalsIgnoreCase("thefourseasonssummer")) return "Antonio Vivaldi";
+        else if (title.equalsIgnoreCase("anitrasdance") || 
+                 title.equalsIgnoreCase("inthehallofthemountainking")) return "Edvard Grieg";
+        else if (title.equalsIgnoreCase("arrivalofthequeenofsheba") || 
+                 title.equalsIgnoreCase("musicfortheroyalfireworks") || 
+                 title.equalsIgnoreCase("watermusicsuiteoverture") || 
+                 title.equalsIgnoreCase("watermusicsuitepresto")) return "Georg Friedrich Handel";
+        else if (title.equalsIgnoreCase("einekleinenachtmusik") || 
+                 title.equalsIgnoreCase("haffnerserenade") || 
+                 title.equalsIgnoreCase("marriageinfigaro") || 
+                 title.equalsIgnoreCase("stringquartet") || 
+                 title.equalsIgnoreCase("symphony40firstmovement")) return "Wolfgang Amadeus Mozart";
+        else if (title.equalsIgnoreCase("nutcrackertrepak") || 
+                 title.equalsIgnoreCase("sleepingbeautywaltz")) return "Peter Ilyich Tchaikovsky";
+        else if (title.equalsIgnoreCase("thefourseasonsspring") || 
+                 title.equalsIgnoreCase("thefourseasonssummer")) return "Antonio Vivaldi";
         else if (title.equalsIgnoreCase("rideofthevalkyries")) return "Richard Wagner";
 
         // Fallback to station name for non-songs (commercials/news)
@@ -826,21 +821,8 @@ public class MediaPlayerService extends MediaLibraryService {
 
     @NonNull
     private static String getSongTitle(String rawName) {
-        String title = rawName;
-        if (title.contains("_")) {
-            title = title.substring(title.indexOf("_") + 1);
-        }
-
-        // Remove suffixes first to avoid matching special cases incorrectly
-        if (title.endsWith("male1") || title.endsWith("male2") || title.endsWith("male3")) {
-            title = title.substring(0, title.length() - 5);
-        } else if (title.endsWith("female1") || title.endsWith("female2") || title.endsWith("female3")) {
-            title = title.substring(0, title.length() - 7);
-        }
-
-        // General replacements
-        title = title.replace("intro", "").replace("outro", "").replace("caller", "");
-        return title;
+        String title = rawName.contains("_") ? rawName.substring(rawName.indexOf("_") + 1) : rawName;
+        return title.replace("intro", "").replace("outro", "").replace("caller", "");
     }
 
     private MediaItem createPlayableItem(String id, String title, String iconName) {
@@ -925,7 +907,7 @@ public class MediaPlayerService extends MediaLibraryService {
         String displayTitle = itemTitle;
         String displayArtist = currentStationName; // Default
 
-        if (type != null && type.equals("song")) {
+        if (Objects.equals(type, "song")) {
             displayTitle = formatSongTitle(rawName);
             displayArtist = formatArtistName(rawName);
         }

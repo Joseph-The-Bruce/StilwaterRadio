@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SaintsRowRadio.Splash" parent="Theme.SaintsRowRadio">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground_30dp</item>
+        <item name="android:windowSplashScreenBackground">@color/black</item>
+    </style>
+</resources>

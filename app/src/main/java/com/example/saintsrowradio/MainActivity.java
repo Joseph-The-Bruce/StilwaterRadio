@@ -47,6 +47,7 @@ import com.google.android.material.slider.Slider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -129,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.saints_tag5,
             R.drawable.saints_tag6,
             R.drawable.saints_tag7,
-            R.drawable.saints_tag8
+            R.drawable.saints_tag8,
+            R.drawable.saints_city1,
+            R.drawable.saints_city2
     };
     private int currentBackgroundResId = R.drawable.saintsrow2;
     private final Random random = new Random();
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             if (v != null) {
                 // If nothing is active, keep everything at full brightness.
                 // If a station is active, highlight only the active one.
-                if (nothingActive || activeStationId.equals(stationIds[i])) {
+                if (nothingActive || Objects.equals(activeStationId, stationIds[i])) {
                     v.setAlpha(1.0f);
                 } else {
                     v.setAlpha(0.4f); // Dim the inactive stations
@@ -240,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
             int bgToApply = currentBackgroundResId;
 
             if (isPortrait) {
-                if (currentBackgroundResId == R.drawable.saints_large_logo) {
-                    bgToApply = R.drawable.saints_logo_pattern_portrait;
+                if (currentBackgroundResId == R.drawable.saints_pattern) {
+                    bgToApply = R.drawable.saints_pattern_portrait;
                 } else if (currentBackgroundResId == R.drawable.saintsrow2) {
                     bgToApply = R.drawable.saintsrow2_portrait;
                 } else if (currentBackgroundResId == R.drawable.saints_tag1) {
@@ -260,6 +263,10 @@ public class MainActivity extends AppCompatActivity {
                     bgToApply = R.drawable.saints_tag7_portrait;
                 } else if (currentBackgroundResId == R.drawable.saints_tag8) {
                     bgToApply = R.drawable.saints_tag8_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_city1) {
+                    bgToApply = R.drawable.saints_city1_portrait;
+                } else if (currentBackgroundResId == R.drawable.saints_city2) {
+                    bgToApply = R.drawable.saints_city2_portrait;
                 }
             }
             
@@ -621,9 +628,9 @@ public class MainActivity extends AppCompatActivity {
         vibrate();
         playBeep();
         if (mediaController != null) {
-            if (activeStationId.equals(stationId) && mediaController.isPlaying()) {
+            if (Objects.equals(activeStationId, stationId) && mediaController.isPlaying()) {
                 mediaController.pause();
-            } else if (activeStationId.equals(stationId) && !mediaController.isPlaying()) {
+            } else if (Objects.equals(activeStationId, stationId) && !mediaController.isPlaying()) {
                 mediaController.play();
             } else {
                 activeStationId = stationId;
