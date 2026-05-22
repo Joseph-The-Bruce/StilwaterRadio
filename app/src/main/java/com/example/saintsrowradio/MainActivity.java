@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.saintsrow2,
             R.drawable.promo,
             R.drawable.saints_promo,
-            R.drawable.saints_large_logo,
+            R.drawable.saints_pattern,
             R.drawable.white_shirt,
             R.drawable.white_suit,
             R.drawable.saints_tag1,
@@ -620,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playBeep() {
-        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 70);
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 50);
         toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
     }
 
