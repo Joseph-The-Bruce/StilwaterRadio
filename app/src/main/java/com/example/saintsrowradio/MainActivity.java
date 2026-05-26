@@ -7,10 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -51,13 +57,24 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "MainActivity";
     private MediaController mediaController;
     private ListenableFuture<MediaController> controllerFuture;
     private String activeStationId = "";
     
+    // Auto-hide UI fields
+    private final Handler hideHandler = new Handler(Looper.getMainLooper());
+    private final Runnable hideRunnable = this::hideUI;
+    private static final long HIDE_DELAY = 10000; // 10 seconds of inactivity
+    private boolean isUiHidden = false;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private float lastX, lastY, lastZ;
+    private static final float MOVEMENT_THRESHOLD = 2.0f;
+
     // Default settings values
     private int commercialsPerSong = 3;
     private int songsPerRotation = 1;
@@ -137,6 +154,93 @@ public class MainActivity extends AppCompatActivity {
     private int currentBackgroundResId = R.drawable.saintsrow2;
     private final Random random = new Random();
 
+    private void hideUI() {
+        final View settings = findViewById(R.id.settingsButton);
+        View stationsView = findViewById(R.id.stationScrollView);
+        if (stationsView == null) stationsView = findViewById(R.id.stationCluster);
+        final View stations = stationsView;
+        final View controls = findViewById(R.id.controlsLayout);
+
+        if (settings != null) settings.animate().alpha(0f).setDuration(500).withEndAction(() -> settings.setVisibility(View.GONE));
+        if (stations != null) stations.animate().alpha(0f).setDuration(500).withEndAction(() -> stations.setVisibility(View.GONE));
+        if (controls != null) controls.animate().alpha(0f).setDuration(500).withEndAction(() -> controls.setVisibility(View.GONE));
+
+        isUiHidden = true;
+    }
+
+    private void showUI() {
+        View settings = findViewById(R.id.settingsButton);
+        View stations = findViewById(R.id.stationScrollView);
+        if (stations == null) stations = findViewById(R.id.stationCluster);
+        View controls = findViewById(R.id.controlsLayout);
+
+        if (settings != null) {
+            settings.setVisibility(View.VISIBLE);
+            settings.animate().alpha(1f).setDuration(300).start();
+        }
+        if (stations != null) {
+            stations.setVisibility(View.VISIBLE);
+            stations.animate().alpha(1f).setDuration(300).start();
+        }
+        if (controls != null) {
+            controls.setVisibility(View.VISIBLE);
+            controls.animate().alpha(1f).setDuration(300).start();
+        }
+
+        isUiHidden = false;
+        resetHideTimer();
+    }
+
+    private void resetHideTimer() {
+        hideHandler.removeCallbacks(hideRunnable);
+        hideHandler.postDelayed(hideRunnable, HIDE_DELAY);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if (isUiHidden) {
+            showUI();
+        } else {
+            resetHideTimer();
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            // If it's the first reading, just store it
+            if (lastX == 0 && lastY == 0 && lastZ == 0) {
+                lastX = x; lastY = y; lastZ = z;
+                return;
+            }
+
+            float deltaX = Math.abs(lastX - x);
+            float deltaY = Math.abs(lastY - y);
+            float deltaZ = Math.abs(lastZ - z);
+
+            if (deltaX > MOVEMENT_THRESHOLD || deltaY > MOVEMENT_THRESHOLD || deltaZ > MOVEMENT_THRESHOLD) {
+                if (isUiHidden) {
+                    showUI();
+                } else {
+                    resetHideTimer();
+                }
+            }
+
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -150,6 +254,24 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             initializeMediaController();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sensorManager != null && accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        resetHideTimer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+        hideHandler.removeCallbacks(hideRunnable);
     }
 
     private void initializeMediaController() {
@@ -644,6 +766,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadSettings();
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+
         if (savedInstanceState != null) {
             currentBackgroundResId = savedInstanceState.getInt("currentBackground", R.drawable.saintsrow2);
         } else {
